@@ -5,6 +5,8 @@ struct CalenderContentSelectionView: View {
     @State private var motivationalPictures = false
     @State private var zodiacSignFacts = false
     @State private var futureTelling = false
+    @State private var tarotCards = false
+
     
     var body: some View {
         NavigationStack(){
@@ -61,6 +63,17 @@ struct CalenderContentSelectionView: View {
                     Toggle("", isOn:  $futureTelling)
                         .labelsHidden()
                         .padding(.leading, 30)
+                    
+                    Text("Tarot cards")
+                        .frame(maxWidth: .infinity, alignment:.topLeading)
+                        .padding(.leading, 30)
+                        .padding(.top)
+                    
+                    
+                    Toggle("", isOn:  $tarotCards)
+                        .labelsHidden()
+                        .padding(.leading, 30)
+
                     
                     Spacer()
                     HStack {
