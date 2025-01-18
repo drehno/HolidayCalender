@@ -15,14 +15,16 @@ struct MyCalendarsView: View {
                 ScrollView {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 20) {
                         ForEach(createdCalendars, id: \.self) { calendar in
-                            VStack {
-                                RoundedRectangle(cornerRadius: 16)
-                                    .fill(Color.blue.opacity(0.2))
-                                    .frame(height: 100)
-                                    .overlay(Image(systemName: "calendar"))
-                                Text(calendar)
-                                    .font(.caption)
-                                    .foregroundColor(.primary)
+                            NavigationLink(destination: CalendarDetailView()){
+                                VStack {
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .fill(Color.blue.opacity(0.2))
+                                        .frame(height: 100)
+                                        .overlay(Image(systemName: "calendar"))
+                                    Text(calendar)
+                                        .font(.caption)
+                                        .foregroundColor(.primary)
+                                }
                             }
                         }
                     }
