@@ -25,12 +25,6 @@ struct ContentView: View {
                     endPoint: .bottomTrailing)
                 .ignoresSafeArea()
                 
-                /*Image("horoscope2")
-                 .resizable()
-                 .renderingMode(.template)
-                 .foregroundColor(.white)
-                 .frame(width: 330, height: 330)*/
-                
                 LinearGradient(gradient: Gradient(colors:  [ Color(#colorLiteral(red: 0, green: 0.01148428768, blue: 0.469781816, alpha: 1)), Color(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1))]), startPoint: .top, endPoint: .bottom)
                     .mask(Image("horoscope2")
                         .resizable()
