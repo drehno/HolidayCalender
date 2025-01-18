@@ -1,10 +1,3 @@
-//
-//  CalendarCreateView.swift
-//  HolidayCalender
-//
-//  Created by iOS on 18.01.25.
-//
-
 import SwiftUI
 
 struct CalendarCreateView: View {
@@ -35,17 +28,17 @@ struct CalendarCreateView: View {
                     ScrollView(){
                         VStack(alignment: .leading){
                             
-                            Text("Calender title")
+                            Text("Calendar title")
                                 .frame(maxWidth: .infinity, alignment:.topLeading)
                                 .padding(.leading, 30)
                                 .padding(.top)
                             
-                            TextField("calender title", text: $customCalenderTitle)
+                            TextField("Calendar title", text: $customCalenderTitle)
                                 .padding(.leading, 30)
                                 .frame(width: 300, height: 50)
                                 .textFieldStyle(.roundedBorder)
                             
-                            Text("Daily Doors")
+                            Text("Daily doors")
                                 .frame(maxWidth: .infinity, alignment:.topLeading)
                                 .padding(.leading, 30)
                                 .padding(.top)
@@ -55,7 +48,7 @@ struct CalendarCreateView: View {
                                 .labelsHidden()
                                 .padding(.leading, 30)
                             
-                            Text("how many doors should be created?")
+                            Text("How many doors should be created?")
                                 .frame(maxWidth: .infinity, alignment:.topLeading)
                                 .keyboardType(.numberPad)
                                 .padding(.leading, 30)
@@ -97,27 +90,32 @@ struct CalendarCreateView: View {
                             .datePickerStyle(.compact)
                             .padding(.leading, 30)
                             .labelsHidden()
-                            
-                            
-                            
                         }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                        .navigationTitle("Calender creator")
+                        .navigationTitle("Calendar Creator")
                         .preferredColorScheme(.dark)
-                        
-                        
-                        
                     }
                     Spacer()
                 }
-                NavigationLink(destination: CalenderContentSelectionView()){
-                    Text("Create calender")
+                
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        NavigationLink(destination: CalenderContentSelectionView()) {
+                            HStack {
+                                Text("Next")
+                                Image(systemName: "chevron.right")
+                            }
+                            .padding()
+                            .background(Color.white.opacity(0.2))
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                            .shadow(radius: 4)
+                        }
+                        .padding(.trailing, 30)
+                        .padding(.bottom, 20)
+                    }
                 }
-                .buttonStyle(.bordered)
-                .padding(.leading, 30)
-                .padding(.top)
-                .tint(.white)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             }
         }
     }
