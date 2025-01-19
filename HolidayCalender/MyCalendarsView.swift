@@ -6,11 +6,26 @@ struct MyCalendarsView: View {
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
-                Text("My Calendars")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .padding(.leading)
-                    .padding(.top)
+                HStack{
+                    Text("My Calendars")
+                        .font(.title)
+                        .fontWeight(.bold)
+                    
+                    Spacer()
+                    
+                    NavigationLink{
+                        OptionsView()
+                    } label: {
+                        Image(systemName: "line.3.horizontal")
+                            .imageScale(.large)
+                            .padding()
+                            .frame(width: 50, height: 50)
+                            .overlay(RoundedRectangle(cornerRadius: 50).stroke())
+                    }
+                    
+                    
+                }
+                .padding(25)
                 
                 ScrollView {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 20) {

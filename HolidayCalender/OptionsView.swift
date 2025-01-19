@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct OptionsView: View {
-    //Hier einfügen: Boolean wert ob das tor von einem kalender bereits geöffnet wurde und diesen in zeile 41 anstelle von isConditionMet einsetzen
+    //TODO: Boolean wert ob das tor von einem kalender bereits geöffnet wurde und diesen in zeile 41 anstelle von isConditionMet einsetzen
     
     var body: some View {
         NavigationStack{
@@ -21,7 +21,7 @@ struct OptionsView: View {
                         .padding(.leading, 30)
                         .padding(.top)
                     
-                    //der button kann später entfernt werden und die aktion wird beim bspw starten der App ausgeführt
+                    //TODO: der button kann später entfernt werden und die aktion wird beim bspw starten der App ausgeführt
                     Button("permisson for notifications"){
                         UNUserNotificationCenter
                             .current()

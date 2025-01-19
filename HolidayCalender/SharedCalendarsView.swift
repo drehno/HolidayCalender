@@ -12,11 +12,27 @@ struct SharedCalendarsView: View {
         
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Shared with Me")
-                .font(.title)
-                .fontWeight(.bold)
-                .padding(.leading)
-                .padding(.top)
+            HStack{
+                Text("Shared with Me")
+                    .font(.title)
+                    .fontWeight(.bold)
+                
+                Spacer()
+                
+                NavigationLink{
+                    OptionsView()
+                } label: {
+                    Image(systemName: "line.3.horizontal")
+                        .imageScale(.large)
+                        .padding()
+                        .frame(width: 50, height: 50)
+                        .overlay(RoundedRectangle(cornerRadius: 50).stroke())
+                }
+                
+                
+            }
+            .padding(25)
+
             ScrollView {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 20) {
                     ForEach(sharedCalendars, id: \.self) { calendar in
