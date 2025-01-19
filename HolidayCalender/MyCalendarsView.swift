@@ -18,7 +18,7 @@ struct MyCalendarsView: View {
                     .foregroundStyle(AppTheme.textPrimary)
                 
                 ScrollView {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 130), spacing: 20)], spacing: 25) {
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 130), spacing: 10)], spacing: 25) {
                         ForEach(createdCalendars, id: \.self) { calendar in
                             NavigationLink(destination: CalendarDetailView(name: calendar)){
                                 VStack(spacing: 1) {
