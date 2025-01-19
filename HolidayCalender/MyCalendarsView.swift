@@ -10,40 +10,27 @@ struct MyCalendarsView: View {
     
     var body: some View {
         ZStack {
+            AppTheme.layeredGradient
+            
             VStack(alignment: .leading) {
-                HStack{
-                    Text("My Calendars")
-                        .font(.title)
-                        .fontWeight(.bold)
-                    
-                    Spacer()
-                    
-                    NavigationLink{
-                        OptionsView()
-                    } label: {
-                        Image(systemName: "line.3.horizontal")
-                            .imageScale(.large)
-                            .padding()
-                            .frame(width: 50, height: 50)
-                            .overlay(RoundedRectangle(cornerRadius: 50).stroke())
-                    }
-                    
-                    
-                }
-                .padding(25)
+                SectionHeaderView(title: "My Calendars")
+                    .font(AppTheme.titleFont())
+                    .foregroundStyle(AppTheme.textPrimary)
                 
                 ScrollView {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 20) {
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 130), spacing: 20)], spacing: 25) {
                         ForEach(createdCalendars, id: \.self) { calendar in
                             NavigationLink(destination: CalendarDetailView(name: calendar)){
-                                VStack {
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .fill(Color.blue.opacity(0.2))
-                                        .frame(height: 100)
-                                        .overlay(Image(systemName: "calendar"))
+                                VStack(spacing: 1) {
+                                    VStack { EmptyView() }
+                                        .frame(height: 130)
+                                        .calendarWidgetStyle()
+                                    
                                     Text(calendar)
-                                        .font(.caption)
-                                        .foregroundColor(.primary)
+                                        .font(AppTheme.bodyFont())
+                                        .foregroundColor(AppTheme.textPrimary)
+                                        .multilineTextAlignment(.center)
+                                        .frame(height: 30)
                                 }
                             }
                         }
@@ -57,17 +44,17 @@ struct MyCalendarsView: View {
                 HStack {
                     Spacer()
                     NavigationLink(destination: CalendarCreateView()
-                        .toolbar(.hidden, for: .tabBar)) {  // Hide Tab Bar
-                        Image(systemName: "pencil")
-                            .resizable()
-                            .frame(width: 24, height: 24)
-                            .foregroundColor(.white)
-                            .padding(20)
-                            .background(Color.black)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                            .shadow(radius: 4)
-                    }
-                    .padding()
+                        .toolbar(.hidden, for: .tabBar)) {
+                            Image(systemName: "plus")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                                .foregroundColor(.white)
+                                .padding(20)
+                                .background(AppTheme.accentDark)
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                                .shadow(radius: 4)
+                        }
+                        .padding()
                 }
             }
         }
