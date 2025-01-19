@@ -1,11 +1,12 @@
 import SwiftUI
 
 struct CalendarCreateView: View {
-    @State private var customCalendarTitle: String = ""
-    @State private var dailyDoors = false
-    @State private var howManyDoors: Int = 1
-    @State private var startingDate = Date()
-    @State private var endingDate = Date()
+    @State private var calendarTitle: String = ""
+   // @State private var dailyDoors = false
+   // @State private var howManyDoors: Int = 1
+    @State private var startDate = Date()
+    @State private var endDate = Date()
+    @State private var navigateToContentSelection = false
     
     var body: some View {
         NavigationStack {
@@ -22,7 +23,7 @@ struct CalendarCreateView: View {
                                 .padding(.leading, 30)
                                 .padding(.top, 40)
                             
-                            TextField("Calendar title", text: $customCalendarTitle)
+                            TextField("Calendar title", text: $calendarTitle)
                                 .padding(10)
                                 .background(AppTheme.accentDark.opacity(0.3))
                                 .cornerRadius(10)
@@ -30,42 +31,46 @@ struct CalendarCreateView: View {
                                 .font(AppTheme.bodyFont())
                             
                             // Daily Doors Toggle
-                            HStack {
-                                Text("Daily Doors")
-                                    .font(AppTheme.secondTitleFont())
-                                    .foregroundColor(AppTheme.textPrimary)
-                                
-                                Spacer()
-                                
-                                Toggle("", isOn: $dailyDoors)
-                                    .labelsHidden()
-                            }
-                            .padding(.horizontal, 30)
-                            .padding(.top, 40)
+                            /*
+                             HStack {
+                             Text("Daily Doors")
+                             .font(AppTheme.secondTitleFont())
+                             .foregroundColor(AppTheme.textPrimary)
+                             
+                             Spacer()
+                             
+                             Toggle("", isOn: $dailyDoors)
+                             .labelsHidden()
+                             }
+                             .padding(.horizontal, 30)
+                             .padding(.top, 40)
+                             */
                             
-                            // Number of Doors Picker
-                            HStack {
-                                Text("Number of Doors")
-                                    .font(AppTheme.secondTitleFont())
-                                    .foregroundColor(AppTheme.textPrimary)
-                                
-                                Spacer()
-                                
-                                Picker("Choose a number", selection: $howManyDoors) {
-                                    ForEach(1...365, id: \.self) { number in
-                                        Text("\(number)")
-                                            .font(AppTheme.bodyFont())
-                                            .tag(number)
-                                    }
-                                }
-                                .pickerStyle(.menu)
-                                .padding(10)
-                                .background(AppTheme.accentDark.opacity(0.3))
-                                .cornerRadius(10)
-                                .accessibilityLabel("Select number of doors")
-                            }
-                            .padding(.horizontal, 30)
-                            .padding(.top, 30)
+                            /*
+                             // Number of Doors Picker
+                             HStack {
+                             Text("Number of Doors")
+                             .font(AppTheme.secondTitleFont())
+                             .foregroundColor(AppTheme.textPrimary)
+                             
+                             Spacer()
+                             
+                             Picker("Choose a number", selection: $howManyDoors) {
+                             ForEach(1...365, id: \.self) { number in
+                             Text("\(number)")
+                             .font(AppTheme.bodyFont())
+                             .tag(number)
+                             }
+                             }
+                             .pickerStyle(.menu)
+                             .padding(10)
+                             .background(AppTheme.accentDark.opacity(0.3))
+                             .cornerRadius(10)
+                             .accessibilityLabel("Select number of doors")
+                             }
+                             .padding(.horizontal, 30)
+                             .padding(.top, 30)
+                             */
                             
                             // Starting Date
                             HStack {
@@ -75,7 +80,7 @@ struct CalendarCreateView: View {
                                 
                                 Spacer()
                                 
-                                DatePicker("", selection: $startingDate, displayedComponents: [.date])
+                                DatePicker("", selection: $startDate, displayedComponents: [.date])
                                     .datePickerStyle(.compact)
                                     .cornerRadius(10)
                                     .accessibilityLabel("Select start date")
@@ -91,7 +96,7 @@ struct CalendarCreateView: View {
                                 
                                 Spacer()
                                 
-                                DatePicker("", selection: $endingDate, displayedComponents: [.date])
+                                DatePicker("", selection: $endDate, displayedComponents: [.date])
                                     .datePickerStyle(.compact)
                                     .cornerRadius(10)
                                     .accessibilityLabel("Select end date")
@@ -106,7 +111,9 @@ struct CalendarCreateView: View {
                     // Next Button
                     HStack {
                         Spacer()
-                        NavigationLink(destination: CalenderContentSelectionView()) {
+                        NavigationLink(destination: CalenderContentSelectionView(
+                            calendarTitle: calendarTitle, startDate: startDate, endDate: endDate
+                        )) {
                             HStack {
                                 Text("Next")
                                 Image(systemName: "chevron.right")
@@ -117,6 +124,7 @@ struct CalendarCreateView: View {
                             .background(AppTheme.accentDark)
                             .cornerRadius(10)
                             .shadow(radius: 4)
+                            .disabled(calendarTitle.isEmpty || startDate > endDate)
                         }
                         .padding(.trailing, 30)
                         .padding(.bottom, 20)
@@ -126,8 +134,4 @@ struct CalendarCreateView: View {
             .navigationTitle("Create Your Calendar")
         }
     }
-}
-
-#Preview {
-    CalendarCreateView()
 }
