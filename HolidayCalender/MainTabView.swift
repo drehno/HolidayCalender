@@ -17,6 +17,7 @@ struct MainTabView: View {
                 Label("Shared with Me", systemImage: "person.2.fill")
             }
         }
+        .accentColor(AppTheme.textPrimary)
     }
 }
 
