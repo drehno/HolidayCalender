@@ -1,11 +1,10 @@
 import SwiftUI
 
-
-
 struct CalendarDetailView: View {
     @State private var showingShareSheet = false
     @State private var itemsToShare: [Any] = []
-    
+    @State private var navigateToMyCalendarsView = false
+
     var name: String
     
     init(name: String) {
@@ -14,87 +13,95 @@ struct CalendarDetailView: View {
 
     
     var body: some View {
-        ZStack {
-            VStack(alignment: .leading) {
-                HStack{
-                    Text(name)
-                        .font(.title)
-                        .fontWeight(.bold)
-                        .padding(.leading)
-                    
-                    Spacer()
-                    
-                    NavigationLink(destination: MyCalendarsView().onAppear {
-                                    deleteCSVFile(fileName: "\(name)")
-                                }) {
-                                    Image(systemName: "trash")
-                                        .imageScale(.large)
-                                        .padding()
-                                        .frame(width: 50, height: 50)
-                                        .overlay(RoundedRectangle(cornerRadius: 50).stroke())
-                                }
-                                .padding(.trailing, 25)
+        Group {
+            if navigateToMyCalendarsView {
+                MyCalendarsView() // Navigate back to MyCalendarsView
+            } else {
+                ZStack {
+                    AppTheme.layeredGradient
 
-                    
-                }
-                
-                ScrollView {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 20) {
-                        ForEach(Array(exampleCalendar.enumerated()), id: \.offset) { index, entry in
-                            if isToday(entry.date) {
-                                NavigationLink(
-                                    destination: CalendarEntryView(entry: entry)
-                                ) {
-                                    VStack(spacing: 1) {
-                                        VStack { EmptyView() }
-                                            .frame(height: 100)
-                                            .calendarWidgetStyle()
-                                        
-                                        Text("\(dateFormatter.string(from: entry.date))")
-                                            .font(AppTheme.bodyFont())
-                                            .foregroundColor(AppTheme.textPrimary)
-                                            .multilineTextAlignment(.center)
-                                            .frame(height: 30)
-                                    }
-                                }
-                            } else {
-                                VStack(spacing: 1) {
-                                    VStack { EmptyView() }
-                                        .frame(height: 100)
-                                        .calendarWidgetStyle()
-                                    
-                                    Text("\(dateFormatter.string(from: entry.date))")
-                                        .font(AppTheme.bodyFont())
-                                        .foregroundColor(AppTheme.textPrimary)
-                                        .multilineTextAlignment(.center)
-                                        .frame(height: 30)
-                                }
+                    VStack(alignment: .leading) {
+                        // Header
+                        HStack {
+                            Text(name)
+                                .font(AppTheme.titleFont())
+                                .foregroundColor(AppTheme.textPrimary)
+                                .fontWeight(.bold)
+
+                            Spacer()
+
+                            
+                            Button(action: {
+                                deleteCSVFile(fileName: "\(name)") // Delete the file
+                                navigateToMyCalendarsView = true // Trigger navigation
+                            }) {
+                                Image(systemName: "trash")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 30, height: 30)
+                                    .foregroundColor(AppTheme.textPrimary)
+                                    .padding(8)
                             }
                         }
-                    }
-                    .padding()
-                }
-            }
-            
-            VStack {
-                Spacer()
-                HStack {
-                    Spacer()
-                    Button(action: {shareCalendar()})
-                           {  // Hide Tab Bar
-                            Image(systemName: "square.and.arrow.up")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(.white)
-                                .padding(20)
-                                .background(Color.black)
-                                .clipShape(RoundedRectangle(cornerRadius: 16))
-                                .shadow(radius: 4)
+                        .padding(20)
+
+                        
+                        ScrollView {
+                            LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 20) {
+                                ForEach(Array(exampleCalendar.enumerated()), id: \.offset) { index, entry in
+                                    if isToday(entry.date) {
+                                        NavigationLink(
+                                            destination: CalendarEntryView(entry: entry)
+                                        ) {
+                                            VStack(spacing: 1) {
+                                                VStack { EmptyView() }
+                                                    .frame(height: 100)
+                                                    .calendarWidgetStyle()
+
+                                                Text("\(dateFormatter.string(from: entry.date))")
+                                                    .font(AppTheme.bodyFont())
+                                                    .foregroundColor(AppTheme.textPrimary)
+                                                    .multilineTextAlignment(.center)
+                                                    .frame(height: 30)
+                                            }
+                                        }
+                                    } else {
+                                        VStack(spacing: 1) {
+                                            VStack { EmptyView() }
+                                                .frame(height: 100)
+                                                .calendarWidgetStyle()
+
+                                            Text("\(dateFormatter.string(from: entry.date))")
+                                                .font(AppTheme.bodyFont())
+                                                .foregroundColor(AppTheme.textPrimary)
+                                                .multilineTextAlignment(.center)
+                                                .frame(height: 30)
+                                        }
+                                    }
+                                }
+                            }
+                            .padding()
                         }
-                           .padding()
-                           /*.sheet(isPresented: $showingShareSheet) {
-                               ShareSheet(activityItems: itemsToShare)
-                           }*/
+                    }
+
+                    
+                    VStack {
+                        Spacer()
+                        HStack {
+                            Spacer()
+                            Button(action: { shareCalendar() }) {
+                                Image(systemName: "square.and.arrow.up")
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
+                                    .foregroundColor(.white)
+                                    .padding(20)
+                                    .background(AppTheme.accentDark)
+                                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                                    .shadow(radius: 4)
+                            }
+                            .padding()
+                        }
+                    }
                 }
             }
         }
