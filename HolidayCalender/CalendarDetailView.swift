@@ -1,10 +1,6 @@
 import SwiftUI
 
-struct CalendarDay {
-    var date: Date
-    var background: Int
-    var quote: String
-}
+
 
 struct CalendarDetailView: View {
     @State private var showingShareSheet = false
@@ -13,18 +9,19 @@ struct CalendarDetailView: View {
     var name: String
     let exampleCalendar: [CalendarDay]
     
+    
     init(name: String) {
         self.name = name
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.yyyy"
         
         let date1 = dateFormatter.date(from: "01.01.2000") ?? Date()
         let date2 = dateFormatter.date(from: "02.01.2000") ?? Date()
         
         self.exampleCalendar = [
-            CalendarDay(date: date1, background: 1, quote: "Deine Mom."),
-            CalendarDay(date: date2, background: 2, quote: "Stay positive.")
+            CalendarDay(date: date1, background: "b1", quote: "Deine Mom."),
+            CalendarDay(date: date2, background: "b2", quote: "Stay positive.")
         ]
+        
+        
     }
 
     
@@ -39,7 +36,25 @@ struct CalendarDetailView: View {
                 
                 ScrollView {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 20) {
-                        
+                        ForEach(Array(exampleCalendar.enumerated()), id: \.offset) {
+ index,
+                            entry in
+                            NavigationLink(
+                                destination: CalendarEntryView(entry: entry)
+                            ) {
+                                VStack(spacing: 1) {
+                                    VStack { EmptyView() }
+                                        .frame(height: 100)
+                                        .calendarWidgetStyle()
+                                    
+                                    Text("\(dateFormatter.string(from: entry.date))")
+                                        .font(AppTheme.bodyFont())
+                                        .foregroundColor(AppTheme.textPrimary)
+                                        .multilineTextAlignment(.center)
+                                        .frame(height: 30)
+                                }
+                            }
+                        }
                     }
                     .padding()
                 }

@@ -35,7 +35,7 @@ func exportCalender(calendar: [CalendarDay]) {
 }
 
 func getCalender(fileURL: URL) -> [CalendarDay] {
-    var calendarDay = CalendarDay(date: Date(), background: 0, quote: "")
+    var calendarDay = CalendarDay(date: Date(), background: "b1", quote: "")
     var calendar : [CalendarDay]
     calendar = []
     do {
@@ -62,7 +62,7 @@ func getCalender(fileURL: URL) -> [CalendarDay] {
                 word += char
             } else if attributeCounter % 3 == 1 {
                 if char == ";" {
-                    calendarDay.background = Int(word) ?? 0
+                    calendarDay.background = word 
                     word = ""
                     attributeCounter += 1
                     continue

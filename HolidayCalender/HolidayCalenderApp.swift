@@ -11,6 +11,10 @@ import SwiftUI
 struct HolidayCalenderApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
+    init() {
+        dateFormatterSetup()
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()

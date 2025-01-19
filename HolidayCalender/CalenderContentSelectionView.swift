@@ -111,11 +111,11 @@ struct CalenderContentSelectionView: View {
         let date2 = dateFormatter.date(from: "02.01.2000") ?? Date()
         
         let exampleCalendar = [
-            CalendarDay(date: date1, background: 1, quote: "Deine Mom."),
-            CalendarDay(date: date2, background: 2, quote: "Stay positive.")
+            CalendarDay(date: date1, background: "b1", quote: "Deine Mom."),
+            CalendarDay(date: date2, background: "b2", quote: "Stay positive.")
         ]
         let csvFormat = generateCSVContent(for: exampleCalendar)
-        saveCSVFile(content: csvFormat, fileName: "HolidayCalendar 6")
+        saveCSVFile(content: csvFormat, fileName: "HolidayCalendar 7")
     }
 }
 
