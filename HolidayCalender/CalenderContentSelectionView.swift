@@ -105,7 +105,7 @@ struct CalenderContentSelectionView: View {
     }
     func createExampleChalendar() { 
         let csvFormat = generateCSVContent(for: exampleCalendar)
-        saveCSVFile(content: csvFormat, fileName: "HolidayCalendar 18")
+        saveCSVFile(content: csvFormat, fileName: "HolidayCalendar18")
     }
 }
 

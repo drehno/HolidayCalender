@@ -21,60 +21,8 @@ struct CalendarEntryView: View {
         }
     }
     
+    
     var body: some View {
-//        ZStack {
-//            AppTheme.layeredGradient
-//            
-//
-//                VStack {
-//                    // Top center text
-//                    Text("Top Centered Text")
-//                        .font(.headline)
-//                        .foregroundColor(.white)
-//                        .padding(.top, 10) // Optional, to add space from the top
-//                        .frame(maxWidth: .infinity, alignment: .center) // Center it horizontally
-//                    
-//                    Spacer()
-//                    Text("\(entry.quote)")
-//                        .font(.title)
-//                        .foregroundColor(.white) // Change the text color as needed
-//                        .bold()
-//                        .multilineTextAlignment(.center)
-//                        .frame(maxWidth: .infinity, maxHeight: .infinity) // Fill the container
-//                }
-//                .padding(20) // Small margins to the edges
-//                .background(                    // Background image inside the box
-//                    Image("mountains-5993080_1920_11zon") // Replace with your actual image name
-//                        .resizable()
-//                        .scaledToFill()
-//                        .cornerRadius(20) // Rounded corners for the image itself
-//                ) 
-//                .cornerRadius(20) 
-//                .padding(30) 
-//            }
-//            
-//            VStack {
-//                Spacer()
-//                HStack {
-//                    Spacer()
-//                    NavigationLink(destination: CalendarCreateView()
-//                        .toolbar(.hidden, for: .tabBar)) {
-//                            Image(systemName: "plus")
-//                                .resizable()
-//                                .frame(width: 24, height: 24)
-//                                .foregroundColor(.white)
-//                                .padding(20)
-//                                .background(AppTheme.accentDark)
-//                                .clipShape(RoundedRectangle(cornerRadius: 16))
-//                                .shadow(radius: 4)
-//                        }
-//                        .padding()
-//                }
-//            
-//        }
-//        .onAppear {
-//            createdCalendars = getAllCalendarNames(folderName: folderName)
-//        }
         ZStack {
             // The main box 
             VStack {
@@ -83,7 +31,7 @@ struct CalendarEntryView: View {
                     .font(.headline)
                     .foregroundColor(.white)
                     .padding(10)
-                    .overlay(
+                    .background(
                         RoundedRectangle(cornerRadius: 10) // Rounded corners for the border
                             .stroke(Color.black, lineWidth: 3) // Red border with 3-point thickness
                             .background(Color.black.opacity(0.1))
@@ -99,10 +47,10 @@ struct CalendarEntryView: View {
                     .foregroundColor(.white)
                     .bold()
                     .padding(10)
-                    .overlay(
+                    .background(
                         RoundedRectangle(cornerRadius: 10) 
                             .stroke(Color.black, lineWidth: 3) 
-                            .background(Color.black.opacity(0.1))
+                            .background(Color.black.opacity(0.4))
                     )
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -126,3 +74,4 @@ struct CalendarEntryView: View {
 #Preview {
     CalendarEntryView(entry: exampleCalendar[0])
 }
+

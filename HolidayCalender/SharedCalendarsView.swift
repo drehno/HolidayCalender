@@ -21,16 +21,18 @@ struct SharedCalendarsView: View {
                 ScrollView {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 130), spacing: 10)], spacing: 25) {
                         ForEach(sharedCalendars, id: \.self) { calendar in
-                            VStack(spacing: 1) {
-                                VStack { EmptyView() }
-                                    .frame(height: 130)
-                                    .calendarWidgetStyle()
-                                
-                                Text(calendar)
-                                    .font(AppTheme.bodyFont())
-                                    .foregroundColor(AppTheme.textPrimary)
-                                    .multilineTextAlignment(.center)
-                                    .frame(height: 30)
+                            NavigationLink(destination: CalendarDetailView(name: calendar)){
+                                VStack(spacing: 1) {
+                                    VStack { EmptyView() }
+                                        .frame(height: 130)
+                                        .calendarWidgetStyle()
+                                    
+                                    Text(calendar)
+                                        .font(AppTheme.bodyFont())
+                                        .foregroundColor(AppTheme.textPrimary)
+                                        .multilineTextAlignment(.center)
+                                        .frame(height: 30)
+                                }
                             }
                         }
                     }

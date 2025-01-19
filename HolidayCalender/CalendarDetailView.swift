@@ -8,10 +8,8 @@ struct CalendarDetailView: View {
     
     var name: String
     
-    
     init(name: String) {
         self.name = name
-        
     }
 
     
@@ -66,7 +64,7 @@ struct CalendarDetailView: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    Button(action: {shareTextFileAndLink()})
+                    Button(action: {shareCalendar()})
                            {  // Hide Tab Bar
                             Image(systemName: "square.and.arrow.up")
                                 .resizable()
@@ -78,16 +76,16 @@ struct CalendarDetailView: View {
                                 .shadow(radius: 4)
                         }
                            .padding()
-                           .sheet(isPresented: $showingShareSheet) {
-                               ShareSheet(activityItems: [URL(string: "https://google.com")!])
-                           }
+                           /*.sheet(isPresented: $showingShareSheet) {
+                               ShareSheet(activityItems: itemsToShare)
+                           }*/
                 }
             }
         }
     }
     
     func createTextFile(withContent content: String) -> URL? {
-        let fileName = "sharedText.txt"
+        let fileName = "sharedCalendar.csv"
         let fileManager = FileManager.default
         let tempDir = fileManager.temporaryDirectory
         let fileURL = tempDir.appendingPathComponent(fileName)
@@ -105,14 +103,72 @@ struct CalendarDetailView: View {
     func shareTextFileAndLink() {
         let textContent = "This is the content of the text file."
         if let fileURL = createTextFile(withContent: textContent) {
-            let shareURL = URL(string: "holidaycalendar://content/path?itemID=12345")!
+            let shareURL = URL(string: "holidaycalendar://home")!
             itemsToShare = [fileURL, shareURL]
             showingShareSheet = true
+            
+            
+            do {
+                // Write the CSV content to the file
+                try textContent
+                    .write(to: fileURL, atomically: true, encoding: .utf8)
+                
+                // Construct the custom URL to open your app
+                let customURL = URL(string: "holidaycalendar://open?file=\(fileURL.absoluteString)")!
+                
+                // Share the file via WhatsApp
+                let activityViewController = UIActivityViewController(activityItems: [customURL], applicationActivities: nil)
+                
+                
+                // Present the share sheet
+                if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                    if let rootViewController = scene.windows.first?.rootViewController {
+                        rootViewController.present(activityViewController, animated: true, completion: nil)
+                    }
+                }
+                
+            } catch {
+                print("Error writing CSV file: \(error)")
+            }
         } else {
             print("Failed to create text file.")
         }
     }
+    
+    func shareCalendar() {
+        // Sample CSV content
+        let csvContent = generateCSVContent(for: exampleCalendar)
+        
+        // Create a temporary file URL for the CSV file
+        let fileName = self.name + ".csv"
+        let fileManager = FileManager.default
+        let tempDir = fileManager.temporaryDirectory
+        let fileURL = tempDir.appendingPathComponent(fileName)
+        
+        do {
+            // Write the CSV content to the file
+            try csvContent.write(to: fileURL, atomically: true, encoding: .utf8)
+            
+            // Construct the custom URL to open your app
+            let customURL = "holidaycalendar://open?file=\(fileURL.lastPathComponent)"
+            
+            // Share the file via WhatsApp
+            let activityViewController = UIActivityViewController(activityItems: [fileURL, customURL], applicationActivities: nil)
+            
+            // Present the share sheet in a safe way
+            if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                if let rootViewController = scene.windows.first?.rootViewController {
+                    rootViewController.present(activityViewController, animated: true, completion: nil)
+                }
+            }
+            
+        } catch {
+            print("Error writing CSV file: \(error)")
+        }
+    }
 }
+
+
 
 #Preview {
     CalendarDetailView(name: "cal1")

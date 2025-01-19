@@ -26,5 +26,5 @@ let date3 = dateFormatter.date(from: "19.01.2025") ?? Date()
 var exampleCalendar = [
     CalendarDay(date: date1, background: "b1", quote: "Deine Mom."),
     CalendarDay(date: date2, background: "b2", quote: "Stay positive."),
-    CalendarDay(date: date3, background: "b3", quote: "Stay negative.")
+    CalendarDay(date: date3, background: "b3", quote: "As the wind shakes the trees, so shall you, shake your booty.")
 ]

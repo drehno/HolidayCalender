@@ -16,11 +16,11 @@ func generateCSVContent(for calendar: [CalendarDay]) -> String {
     return csvContent
 }
 
-func saveCSVFile(content: String, fileName: String) {
+func saveCSVFile(content: String, fileName: String, folder: String = "createdCalendars") {
     let fileManager = FileManager.default
     do {
         let documentsURL = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-        let folderURL = documentsURL.appendingPathComponent("createdCalendars")
+        let folderURL = documentsURL.appendingPathComponent(folder)
         
         let fileURL = folderURL.appendingPathComponent("\(fileName).csv")
         try content.write(to: fileURL, atomically: true, encoding: .utf8)
@@ -29,9 +29,9 @@ func saveCSVFile(content: String, fileName: String) {
     }
 }
 
-func exportCalender(calendar: [CalendarDay]) {
+func exportCalender(calendar: [CalendarDay], folder: String = "createdCalendars") {
     let csvFormat = generateCSVContent(for: calendar)
-    saveCSVFile(content: csvFormat, fileName: "HolidayCalendar")
+    saveCSVFile(content: csvFormat, fileName: "HolidayCalendar", folder: folder)
 }
 
 func getCalender(fileURL: URL) -> [CalendarDay] {
@@ -88,7 +88,7 @@ func getCalender(fileURL: URL) -> [CalendarDay] {
     return calendar
 }
 
-private func getFolderURL(folderName: String) -> URL? {
+func getFolderURL(folderName: String) -> URL? {
     return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(folderName)
 }
 
