@@ -13,6 +13,7 @@ struct HolidayCalenderApp: App {
     
     init() {
         dateFormatterSetup()
+        AppTheme.applyNavigationBarStyle()
     }
     
     var body: some Scene {

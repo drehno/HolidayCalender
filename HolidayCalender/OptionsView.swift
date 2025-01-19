@@ -1,10 +1,3 @@
-//
-//  OptionsView.swift
-//  HolidayCalender
-//
-//  Created by Max krupa on 17.01.25.
-//
-
 import SwiftUI
 
 struct OptionsView: View {
@@ -13,37 +6,60 @@ struct OptionsView: View {
     var body: some View {
         NavigationStack{
             ZStack{
+                AppTheme.layeredGradient
+                
                 VStack(alignment: .leading){
                     Text("Settings")
-                        .frame(maxWidth: .infinity, alignment:.topLeading)
-                        .font(.title)
-                        .fontWeight(.bold)
+                        .font(AppTheme.titleFont())
+                        .foregroundColor(AppTheme.textPrimary)
                         .padding(.leading, 30)
-                        .padding(.top)
+                        .padding(.top, 40)
                     
                     //TODO: der button kann später entfernt werden und die aktion wird beim bspw starten der App ausgeführt
-                    Button("permisson for notifications"){
+                    Button(action: {
                         UNUserNotificationCenter
                             .current()
                             .requestAuthorization(options: [.alert, .sound, .badge]) { success, error in
-                            if success {
-                                print("permission granted")
-                            } else if let error = error {
-                                print("permission denied: \(error.localizedDescription)")
+                                if success {
+                                    print("permission granted")
+                                } else if let error = error {
+                                    print("permission denied: \(error.localizedDescription)")
+                                }
                             }
+                    })
+                    {
+                        HStack {
+                            Text("Permission for Notifications")
+                                .font(AppTheme.secondTitleFont())
+                                .foregroundColor(AppTheme.textPrimary)
+                            
+                            Spacer()
                         }
+                        .padding()
+                        .background(AppTheme.accentDark.opacity(0.3))
+                        .cornerRadius(10)
                     }
-                    .padding(.leading, 30)
-                    .padding(.top)
-                    .buttonStyle(.bordered)
-                        
-                    Button("Schedule notifications"){
-                        scheduleDailyNotification(hour: 20, minute: 0, isConditionMet: false)
-                    }
-                    .padding(.leading, 30)
-                    .padding(.top)
-                    .buttonStyle(.bordered)
+                    .padding(.horizontal, 30)
+                    .padding(.top, 20)
                     
+                    Button(action: {
+                        scheduleDailyNotification(hour: 20, minute: 0, isConditionMet: false)
+                    }) {
+                        HStack {
+                            Text("Schedule Notifications")
+                                .font(AppTheme.secondTitleFont())
+                                .foregroundColor(AppTheme.textPrimary)
+                            
+                            Spacer()
+                        }
+                        .padding()
+                        .background(AppTheme.accentDark.opacity(0.3))
+                        .cornerRadius(10)
+                    }
+                    .padding(.horizontal, 30)
+                    .padding(.top, 20)
+                    
+                    Spacer()
                 }
                 .frame(maxHeight: .infinity, alignment: .top)
             }

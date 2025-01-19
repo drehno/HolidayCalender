@@ -10,7 +10,7 @@ struct CalendarCreateView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                AppTheme.layeredGradient // Themed background
+                AppTheme.layeredGradient
                 
                 VStack {
                     ScrollView {
@@ -21,7 +21,6 @@ struct CalendarCreateView: View {
                                 .foregroundColor(AppTheme.textPrimary)
                                 .padding(.leading, 30)
                                 .padding(.top, 40)
-                                .padding(.bottom, 5)
                             
                             TextField("Calendar title", text: $customCalendarTitle)
                                 .padding(10)
@@ -40,7 +39,6 @@ struct CalendarCreateView: View {
                                 
                                 Toggle("", isOn: $dailyDoors)
                                     .labelsHidden()
-                                    .accessibilityLabel("Enable or disable daily doors")
                             }
                             .padding(.horizontal, 30)
                             .padding(.top, 40)
@@ -79,12 +77,11 @@ struct CalendarCreateView: View {
                                 
                                 DatePicker("", selection: $startingDate, displayedComponents: [.date])
                                     .datePickerStyle(.compact)
-                                    .padding(10)
                                     .cornerRadius(10)
                                     .accessibilityLabel("Select start date")
                             }
                             .padding(.horizontal, 30)
-                            .padding(.top, 25)
+                            .padding(.top, 30)
                             
                             // Ending Date
                             HStack {
@@ -96,12 +93,11 @@ struct CalendarCreateView: View {
                                 
                                 DatePicker("", selection: $endingDate, displayedComponents: [.date])
                                     .datePickerStyle(.compact)
-                                    .padding(10)
                                     .cornerRadius(10)
                                     .accessibilityLabel("Select end date")
                             }
                             .padding(.horizontal, 30)
-                            .padding(.top, 25)
+                            .padding(.top, 30)
                         }
                     }
                     
@@ -113,11 +109,10 @@ struct CalendarCreateView: View {
                         NavigationLink(destination: CalenderContentSelectionView()) {
                             HStack {
                                 Text("Next")
-                                    .font(AppTheme.bodyFont())
-                                    .foregroundColor(.white)
                                 Image(systemName: "chevron.right")
-                                    .foregroundColor(.white)
                             }
+                            .foregroundColor(.white)
+                            .font(AppTheme.bodyFontBold())
                             .padding()
                             .background(AppTheme.accentDark)
                             .cornerRadius(10)
