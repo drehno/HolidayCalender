@@ -24,16 +24,18 @@ struct CalendarDetailView: View {
                     
                     Spacer()
                     
-                    Button{
-                        deleteCSVFile(fileName: "\(name)")
-                    } label:{
-                        Image(systemName: "line.3.horizontal")
-                                                    .imageScale(.large)
-                                                    .padding()
-                                                    .frame(width: 50, height: 50)
-                                                    .overlay(RoundedRectangle(cornerRadius: 50).stroke())
-                    }
-                    .padding(.trailing, 25)
+                    NavigationLink(destination: MyCalendarsView().onAppear {
+                                    deleteCSVFile(fileName: "\(name)")
+                                }) {
+                                    Image(systemName: "trash")
+                                        .imageScale(.large)
+                                        .padding()
+                                        .frame(width: 50, height: 50)
+                                        .overlay(RoundedRectangle(cornerRadius: 50).stroke())
+                                }
+                                .padding(.trailing, 25)
+
+                    
                 }
                 
                 ScrollView {
