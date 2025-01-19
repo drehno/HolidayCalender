@@ -29,6 +29,25 @@ func saveCSVFile(content: String, fileName: String) {
     }
 }
 
+func deleteCSVFile(fileName: String) {
+    let fileManager = FileManager.default
+    do {
+        let documentsURL = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+        let folderURL = documentsURL.appendingPathComponent("createdCalendars")
+        
+        let fileURL = folderURL.appendingPathComponent("\(fileName).csv")
+        
+        if fileManager.fileExists(atPath: fileURL.path) {
+            try fileManager.removeItem(at: fileURL)
+            print("File \(fileName).csv deleted successfully.")
+        } else {
+            print("File does not exist.")
+        }
+    } catch {
+        print("Error deleting file: \(error)")
+    }
+}
+
 func exportCalender(calendar: [CalendarDay]) {
     let csvFormat = generateCSVContent(for: calendar)
     saveCSVFile(content: csvFormat, fileName: "HolidayCalendar")
