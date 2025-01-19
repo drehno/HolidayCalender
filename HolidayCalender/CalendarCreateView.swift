@@ -1,114 +1,125 @@
 import SwiftUI
 
 struct CalendarCreateView: View {
-    @State private var customCalenderTitle: String = ""
+    @State private var customCalendarTitle: String = ""
     @State private var dailyDoors = false
     @State private var howManyDoors: Int = 1
     @State private var startingDate = Date()
     @State private var endingDate = Date()
     
     var body: some View {
-        NavigationStack(){
-            ZStack(){
-                LinearGradient(
-                    gradient: Gradient(colors: [Color(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)), Color(#colorLiteral(red: 0, green: 0.01148428768, blue: 0.469781816, alpha: 1))]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing)
-                .ignoresSafeArea()
-                
-                LinearGradient(gradient: Gradient(colors:  [ Color(#colorLiteral(red: 0, green: 0.01148428768, blue: 0.469781816, alpha: 1)), Color(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1))]), startPoint: .top, endPoint: .bottom)
-                    .mask(Image("horoscope2")
-                        .resizable()
-                        .padding()
-                        .aspectRatio(contentMode: .fit))
-                
-                //constellation
-                //horoscope2
-                VStack{
-                    ScrollView(){
-                        VStack(alignment: .leading){
-                            
-                            Text("Calendar title")
-                                .frame(maxWidth: .infinity, alignment:.topLeading)
-                                .padding(.leading, 30)
-                                .padding(.top)
-                            
-                            TextField("Calendar title", text: $customCalenderTitle)
-                                .padding(.leading, 30)
-                                .frame(width: 300, height: 50)
-                                .textFieldStyle(.roundedBorder)
-                            
-                            Text("Daily doors")
-                                .frame(maxWidth: .infinity, alignment:.topLeading)
-                                .padding(.leading, 30)
-                                .padding(.top)
-                            
-                            
-                            Toggle("", isOn:  $dailyDoors)
-                                .labelsHidden()
-                                .padding(.leading, 30)
-                            
-                            Text("How many doors should be created?")
-                                .frame(maxWidth: .infinity, alignment:.topLeading)
-                                .keyboardType(.numberPad)
-                                .padding(.leading, 30)
-                                .padding(.top)
-                            
-                            Picker("Choose a number", selection: $howManyDoors) {
-                                ForEach(1...365, id: \.self) { number in
-                                    Text("\(number)").tag(number)
-                                }
-                            }
-                            .padding(.leading, 30)
-                            .padding(.top)
-                            .tint(.white)
-                            
-                            
-                            Text("Starting date")
-                                .frame(maxWidth: .infinity, alignment:.topLeading)
-                                .padding(.leading, 30)
-                                .padding(.top)
-                            
-                            DatePicker(
-                                "",
-                                selection: $startingDate,
-                                displayedComponents: [.date]
-                            )
-                            .datePickerStyle(.compact)
-                            .padding(.leading, 30)
-                            .labelsHidden()
-                            
-                            Text("End date")
-                                .frame(maxWidth: .infinity, alignment:.topLeading)
-                                .padding(.leading, 30)
-                                .padding(.top)
-                            
-                            DatePicker("",
-                                selection: $endingDate,
-                                displayedComponents: [.date]
-                            )
-                            .datePickerStyle(.compact)
-                            .padding(.leading, 30)
-                            .labelsHidden()
-                        }
-                        .navigationTitle("Calendar Creator")
-                        .preferredColorScheme(.dark)
-                    }
-                    Spacer()
-                }
+        NavigationStack {
+            ZStack {
+                AppTheme.layeredGradient // Themed background
                 
                 VStack {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 20) {
+                            // Calendar Title
+                            Text("Calendar Title")
+                                .font(AppTheme.secondTitleFont())
+                                .foregroundColor(AppTheme.textPrimary)
+                                .padding(.leading, 30)
+                                .padding(.top, 40)
+                                .padding(.bottom, 5)
+                            
+                            TextField("Calendar title", text: $customCalendarTitle)
+                                .padding(10)
+                                .background(AppTheme.accentDark.opacity(0.3))
+                                .cornerRadius(10)
+                                .padding(.horizontal, 30)
+                                .font(AppTheme.bodyFont())
+                            
+                            // Daily Doors Toggle
+                            HStack {
+                                Text("Daily Doors")
+                                    .font(AppTheme.secondTitleFont())
+                                    .foregroundColor(AppTheme.textPrimary)
+                                
+                                Spacer()
+                                
+                                Toggle("", isOn: $dailyDoors)
+                                    .labelsHidden()
+                                    .accessibilityLabel("Enable or disable daily doors")
+                            }
+                            .padding(.horizontal, 30)
+                            .padding(.top, 40)
+                            
+                            // Number of Doors Picker
+                            HStack {
+                                Text("Number of Doors")
+                                    .font(AppTheme.secondTitleFont())
+                                    .foregroundColor(AppTheme.textPrimary)
+                                
+                                Spacer()
+                                
+                                Picker("Choose a number", selection: $howManyDoors) {
+                                    ForEach(1...365, id: \.self) { number in
+                                        Text("\(number)")
+                                            .font(AppTheme.bodyFont())
+                                            .tag(number)
+                                    }
+                                }
+                                .pickerStyle(.menu)
+                                .padding(10)
+                                .background(AppTheme.accentDark.opacity(0.3))
+                                .cornerRadius(10)
+                                .accessibilityLabel("Select number of doors")
+                            }
+                            .padding(.horizontal, 30)
+                            .padding(.top, 30)
+                            
+                            // Starting Date
+                            HStack {
+                                Text("Start Date")
+                                    .font(AppTheme.secondTitleFont())
+                                    .foregroundColor(AppTheme.textPrimary)
+                                
+                                Spacer()
+                                
+                                DatePicker("", selection: $startingDate, displayedComponents: [.date])
+                                    .datePickerStyle(.compact)
+                                    .padding(10)
+                                    .cornerRadius(10)
+                                    .accessibilityLabel("Select start date")
+                            }
+                            .padding(.horizontal, 30)
+                            .padding(.top, 25)
+                            
+                            // Ending Date
+                            HStack {
+                                Text("End Date")
+                                    .font(AppTheme.secondTitleFont())
+                                    .foregroundColor(AppTheme.textPrimary)
+                                
+                                Spacer()
+                                
+                                DatePicker("", selection: $endingDate, displayedComponents: [.date])
+                                    .datePickerStyle(.compact)
+                                    .padding(10)
+                                    .cornerRadius(10)
+                                    .accessibilityLabel("Select end date")
+                            }
+                            .padding(.horizontal, 30)
+                            .padding(.top, 25)
+                        }
+                    }
+                    
                     Spacer()
+                    
+                    // Next Button
                     HStack {
                         Spacer()
                         NavigationLink(destination: CalenderContentSelectionView()) {
                             HStack {
                                 Text("Next")
+                                    .font(AppTheme.bodyFont())
+                                    .foregroundColor(.white)
                                 Image(systemName: "chevron.right")
+                                    .foregroundColor(.white)
                             }
                             .padding()
-                            .background(Color.white.opacity(0.2))
-                            .foregroundColor(.white)
+                            .background(AppTheme.accentDark)
                             .cornerRadius(10)
                             .shadow(radius: 4)
                         }
@@ -117,6 +128,7 @@ struct CalendarCreateView: View {
                     }
                 }
             }
+            .navigationTitle("Create Your Calendar")
         }
     }
 }
