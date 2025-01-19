@@ -6,6 +6,7 @@ struct CalenderContentSelectionView: View {
     @State private var zodiacSignFacts = false
     @State private var futureTelling = false
     @State private var tarotCards = false
+    @State private var navigateToCalendarView = false
 
     
     var body: some View {
@@ -78,30 +79,31 @@ struct CalenderContentSelectionView: View {
                     Spacer()
                     HStack {
                         Spacer()
-                        Button(action: {
-                            // Action for creating the calendar
-                            print("clicked")
-                            createExampleCharacter()
-                            MyCalendarsView()
-                        }) {
+                        NavigationLink(destination: MyCalendarsView()) {
+                            HStack{
                             Text("Create calendar")
-                                .padding()
-                                .background(Color.blue.opacity(0.6))
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                                .shadow(radius: 4)
                         }
-                        Spacer()
+                        .padding()
+                        .background(Color.blue.opacity(0.6))
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                        .shadow(radius: 4)
+                        .onTapGesture {
+                            createExampleChalendar()
+                        }
+                        
                     }
-                    .padding(.bottom, 20)
+                    Spacer()
                 }
+                .padding(.bottom, 20)
+            }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
             .navigationTitle("Calendar content")
             .preferredColorScheme(.dark)
         }
     }
-    func createExampleCharacter() {
+    func createExampleChalendar() {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd.MM.yyyy"
         
@@ -113,7 +115,7 @@ struct CalenderContentSelectionView: View {
             CalendarDay(date: date2, background: 2, quote: "Stay positive.")
         ]
         let csvFormat = generateCSVContent(for: exampleCalendar)
-        saveCSVFile(content: csvFormat, fileName: "HolidayCalendar")
+        saveCSVFile(content: csvFormat, fileName: "HolidayCalendar 6")
     }
 }
 

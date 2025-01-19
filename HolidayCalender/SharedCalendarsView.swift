@@ -1,7 +1,13 @@
 import SwiftUI
 
 struct SharedCalendarsView: View {
-    let sharedCalendars = ["Shared Calendar 1", "Shared Calendar 2", "Shared Calendar 3"]
+    private let folderName = "sharedCalendars"
+    @State private var sharedCalendars: [String] = []
+    
+    init() {
+        createFolderIfNeeded(folderName: folderName)
+    }
+    
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -22,6 +28,9 @@ struct SharedCalendarsView: View {
                     }
                 }
                 .padding()
+            }
+            .onAppear {
+                sharedCalendars = getAllCalendarNames(folderName: folderName)
             }
         }
     }

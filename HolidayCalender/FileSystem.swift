@@ -88,4 +88,33 @@ func getCalender(fileURL: URL) -> [CalendarDay] {
     return calendar
 }
 
+private func getFolderURL(folderName: String) -> URL? {
+    return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(folderName)
+}
 
+func createFolderIfNeeded(folderName: String) {
+    guard let folderURL = getFolderURL(folderName: folderName) else { return }
+    
+    if !FileManager.default.fileExists(atPath: folderURL.path) {
+        do {
+            try FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
+            print("Folder created at: \(folderURL.path)")
+        } catch {
+            print("Failed to create folder: \(error)")
+        }
+    }
+}
+
+func getAllCalendarNames(folderName: String) -> [String] {
+    guard let folderURL = getFolderURL(folderName: folderName) else {
+        return []
+    }
+    do {
+        let fileURLs = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: nil)
+        let calendarNames = fileURLs.map { $0.deletingPathExtension().lastPathComponent }
+        return calendarNames
+    } catch {
+        print("Failed to retrieve calendar names: \(error)")
+        return []
+    }
+}

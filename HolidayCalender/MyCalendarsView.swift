@@ -5,7 +5,7 @@ struct MyCalendarsView: View {
     @State private var createdCalendars: [String] = []
     
     init() {
-        createFolderIfNeeded()
+        createFolderIfNeeded(folderName: folderName)
     }
     
     var body: some View {
@@ -59,36 +59,7 @@ struct MyCalendarsView: View {
             }
         }
         .onAppear {
-            createdCalendars = getAllCalendarNames()
-        }
-    }
-    
-    private func getFolderURL() -> URL? {
-        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(folderName)
-    }
-    
-    func getAllCalendarNames() -> [String] {
-        guard let folderURL = getFolderURL() else { return [] }
-        do {
-            let fileURLs = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: nil)
-            let calendarNames = fileURLs.map { $0.deletingPathExtension().lastPathComponent }
-            return calendarNames
-        } catch {
-            print("Failed to retrieve calendar names: \(error)")
-            return []
-        }
-    }
-    
-    private func createFolderIfNeeded() {
-        guard let folderURL = getFolderURL() else { return }
-        
-        if !FileManager.default.fileExists(atPath: folderURL.path) {
-            do {
-                try FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
-                print("Folder created at: \(folderURL.path)")
-            } catch {
-                print("Failed to create folder: \(error)")
-            }
+            createdCalendars = getAllCalendarNames(folderName: folderName)
         }
     }
 }
