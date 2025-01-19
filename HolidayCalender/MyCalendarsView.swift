@@ -1,7 +1,12 @@
 import SwiftUI
 
 struct MyCalendarsView: View {
-    let createdCalendars = ["Calendar 1", "Calendar 2", "Calendar 3"]
+    private let folderName = "createdCalendars"
+    @State private var createdCalendars: [String] = []
+    
+    init() {
+        createFolderIfNeeded()
+    }
     
     var body: some View {
         ZStack {
@@ -30,7 +35,7 @@ struct MyCalendarsView: View {
                 ScrollView {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 20) {
                         ForEach(createdCalendars, id: \.self) { calendar in
-                            NavigationLink(destination: CalendarDetailView()){
+                            NavigationLink(destination: CalendarDetailView(name: calendar)){
                                 VStack {
                                     RoundedRectangle(cornerRadius: 16)
                                         .fill(Color.blue.opacity(0.2))
@@ -64,6 +69,38 @@ struct MyCalendarsView: View {
                     }
                     .padding()
                 }
+            }
+        }
+        .onAppear {
+            createdCalendars = getAllCalendarNames()
+        }
+    }
+    
+    private func getFolderURL() -> URL? {
+        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(folderName)
+    }
+    
+    func getAllCalendarNames() -> [String] {
+        guard let folderURL = getFolderURL() else { return [] }
+        do {
+            let fileURLs = try FileManager.default.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: nil)
+            let calendarNames = fileURLs.map { $0.deletingPathExtension().lastPathComponent }
+            return calendarNames
+        } catch {
+            print("Failed to retrieve calendar names: \(error)")
+            return []
+        }
+    }
+    
+    private func createFolderIfNeeded() {
+        guard let folderURL = getFolderURL() else { return }
+        
+        if !FileManager.default.fileExists(atPath: folderURL.path) {
+            do {
+                try FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
+                print("Folder created at: \(folderURL.path)")
+            } catch {
+                print("Failed to create folder: \(error)")
             }
         }
     }

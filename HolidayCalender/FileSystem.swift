@@ -7,12 +7,6 @@
 
 import Foundation
 
-struct CalendarDay {
-    var date: Date
-    var background: Int
-    var quote: String
-}
-
 func generateCSVContent(for calendar: [CalendarDay]) -> String {
     var csvContent = ""
     for entry in calendar {
@@ -26,7 +20,9 @@ func saveCSVFile(content: String, fileName: String) -> URL? {
     let fileManager = FileManager.default
     do {
         let documentsURL = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-        let fileURL = documentsURL.appendingPathComponent(fileName)
+        let folderURL = documentsURL.appendingPathComponent("createdCalendars")
+        
+        let fileURL = folderURL.appendingPathComponent("\(fileName).csv")
         try content.write(to: fileURL, atomically: true, encoding: .utf8)
         return fileURL
     } catch {
@@ -35,11 +31,9 @@ func saveCSVFile(content: String, fileName: String) -> URL? {
     }
 }
 
-
-
 func exportCalender(calendar: [CalendarDay]) {
     let csvFormat = generateCSVContent(for: calendar)
-    saveCSVFile(content: csvFormat, fileName: "HolidayCalendar.csv")
+    saveCSVFile(content: csvFormat, fileName: "HolidayCalendar")
 }
 
 func getCalender(fileURL: URL) -> [CalendarDay] {
@@ -88,7 +82,6 @@ func getCalender(fileURL: URL) -> [CalendarDay] {
             }
             
             }
-            
         }
     } catch {
         print("Error reading calendar file")    
@@ -96,3 +89,5 @@ func getCalender(fileURL: URL) -> [CalendarDay] {
     
     return calendar
 }
+
+

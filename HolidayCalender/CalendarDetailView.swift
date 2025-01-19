@@ -1,14 +1,20 @@
 import SwiftUI
 
+struct CalendarDay {
+    var date: Date
+    var background: Int
+    var quote: String
+}
 
 struct CalendarDetailView: View {
     @State private var showingShareSheet = false
     @State private var itemsToShare: [Any] = []
     
+    var name: String
     let exampleCalendar: [CalendarDay]
     
-    init() {
-        print("detail view")
+    init(name: String) {
+        self.name = name
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd.MM.yyyy"
         
@@ -25,7 +31,7 @@ struct CalendarDetailView: View {
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
-                Text("Calendar name")
+                Text(name)
                     .font(.title)
                     .fontWeight(.bold)
                     .padding(.leading)
@@ -92,5 +98,5 @@ struct CalendarDetailView: View {
 }
 
 #Preview {
-   CalendarDetailView()
+    CalendarDetailView(name: "cal1")
 }

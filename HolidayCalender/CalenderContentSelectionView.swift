@@ -80,6 +80,9 @@ struct CalenderContentSelectionView: View {
                         Spacer()
                         Button(action: {
                             // Action for creating the calendar
+                            print("clicked")
+                            createExampleCharacter()
+                            MyCalendarsView()
                         }) {
                             Text("Create calendar")
                                 .padding()
@@ -97,6 +100,20 @@ struct CalenderContentSelectionView: View {
             .navigationTitle("Calendar content")
             .preferredColorScheme(.dark)
         }
+    }
+    func createExampleCharacter() {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy"
+        
+        let date1 = dateFormatter.date(from: "01.01.2000") ?? Date()
+        let date2 = dateFormatter.date(from: "02.01.2000") ?? Date()
+        
+        let exampleCalendar = [
+            CalendarDay(date: date1, background: 1, quote: "Deine Mom."),
+            CalendarDay(date: date2, background: 2, quote: "Stay positive.")
+        ]
+        let csvFormat = generateCSVContent(for: exampleCalendar)
+        saveCSVFile(content: csvFormat, fileName: "HolidayCalendar")
     }
 }
 
