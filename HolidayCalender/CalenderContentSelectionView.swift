@@ -103,19 +103,9 @@ struct CalenderContentSelectionView: View {
             .preferredColorScheme(.dark)
         }
     }
-    func createExampleChalendar() {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.yyyy"
-        
-        let date1 = dateFormatter.date(from: "01.01.2000") ?? Date()
-        let date2 = dateFormatter.date(from: "02.01.2000") ?? Date()
-        
-        let exampleCalendar = [
-            CalendarDay(date: date1, background: "b1", quote: "Deine Mom."),
-            CalendarDay(date: date2, background: "b2", quote: "Stay positive.")
-        ]
+    func createExampleChalendar() { 
         let csvFormat = generateCSVContent(for: exampleCalendar)
-        saveCSVFile(content: csvFormat, fileName: "HolidayCalendar 7")
+        saveCSVFile(content: csvFormat, fileName: "HolidayCalendar 18")
     }
 }
 
