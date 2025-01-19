@@ -62,6 +62,10 @@ struct AppTheme {
         Font.custom("AvenirNext-Bold", size: 28)
     }
 
+    static func secondTitleFont() -> Font {
+        Font.custom("AvenirNext-Bold", size: 22)
+    }
+    
     static func bodyFont() -> Font {
         Font.custom("AvenirNext-Regular", size: 18)
     }
