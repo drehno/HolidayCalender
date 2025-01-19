@@ -16,7 +16,7 @@ func generateCSVContent(for calendar: [CalendarDay]) -> String {
     return csvContent
 }
 
-func saveCSVFile(content: String, fileName: String) -> URL? {
+func saveCSVFile(content: String, fileName: String) {
     let fileManager = FileManager.default
     do {
         let documentsURL = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
@@ -24,10 +24,8 @@ func saveCSVFile(content: String, fileName: String) -> URL? {
         
         let fileURL = folderURL.appendingPathComponent("\(fileName).csv")
         try content.write(to: fileURL, atomically: true, encoding: .utf8)
-        return fileURL
     } catch {
         print("Error saving file: \(error)")
-        return nil
     }
 }
 
