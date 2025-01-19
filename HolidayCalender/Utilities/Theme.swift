@@ -69,4 +69,15 @@ struct AppTheme {
     static func bodyFont() -> Font {
         Font.custom("AvenirNext-Regular", size: 18)
     }
+    
+    static func bodyFontBold() -> Font {
+        Font.custom("AvenirNext-Bold", size: 18)
+    }
+    
+    static func applyNavigationBarStyle() {
+            UINavigationBar.appearance().titleTextAttributes = [
+                .foregroundColor: UIColor(AppTheme.textPrimary),
+                .font: UIFont(name: "AvenirNext-Bold", size: 18)!
+            ]
+        }
 }

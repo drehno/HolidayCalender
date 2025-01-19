@@ -10,100 +10,105 @@ struct CalenderContentSelectionView: View {
 
     
     var body: some View {
-        NavigationStack(){
-            ZStack{
-                LinearGradient(
-                    gradient: Gradient(colors: [Color(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)), Color(#colorLiteral(red: 0, green: 0.01148428768, blue: 0.469781816, alpha: 1))]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing)
-                    .ignoresSafeArea()
-                
-                LinearGradient(gradient: Gradient(colors:  [ Color(#colorLiteral(red: 0, green: 0.01148428768, blue: 0.469781816, alpha: 1)), Color(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1))]), startPoint: .top, endPoint: .bottom)
-                    .mask(Image("horoscope2")
-                        .resizable()
-                        .padding()
-                        .aspectRatio(contentMode: .fit))
-                
-                VStack(alignment: .leading){
-                    Text("Motivational Quotes")
-                        .frame(maxWidth: .infinity, alignment:.topLeading)
-                        .padding(.leading, 30)
-                        .padding(.top)
+        Group {
+            if navigateToCalendarView {
+                MyCalendarsView()
+            } else {
+                ZStack {
+                    AppTheme.layeredGradient
                     
-                    
-                    Toggle("", isOn:  $motivationalQuotes)
-                        .labelsHidden()
-                        .padding(.leading, 30)
-                    
-                    Text("Motivational Pictures")
-                        .frame(maxWidth: .infinity, alignment:.topLeading)
-                        .padding(.leading, 30)
-                        .padding(.top)
-                    
-                    
-                    Toggle("", isOn:  $motivationalPictures)
-                        .labelsHidden()
-                        .padding(.leading, 30)
-                    
-                    Text("Zodiac Sign facts")
-                        .frame(maxWidth: .infinity, alignment:.topLeading)
-                        .padding(.leading, 30)
-                        .padding(.top)
-                    
-                    
-                    Toggle("", isOn:  $zodiacSignFacts)
-                        .labelsHidden()
-                        .padding(.leading, 30)
-                    
-                    Text("Future telling")
-                        .frame(maxWidth: .infinity, alignment:.topLeading)
-                        .padding(.leading, 30)
-                        .padding(.top)
-                    
-                    
-                    Toggle("", isOn:  $futureTelling)
-                        .labelsHidden()
-                        .padding(.leading, 30)
-                    
-                    Text("Tarot cards")
-                        .frame(maxWidth: .infinity, alignment:.topLeading)
-                        .padding(.leading, 30)
-                        .padding(.top)
-                    
-                    
-                    Toggle("", isOn:  $tarotCards)
-                        .labelsHidden()
-                        .padding(.leading, 30)
-
-                    
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        NavigationLink(destination: MyCalendarsView()) {
-                            HStack{
-                            Text("Create calendar")
+                    VStack(alignment: .leading) {
+                        HStack {
+                            Text("Motivational Quotes")
+                                .font(AppTheme.secondTitleFont())
+                                .foregroundColor(AppTheme.textPrimary)
+                            
+                            Spacer()
+                            
+                            Toggle("", isOn: $motivationalQuotes)
+                                .labelsHidden()
                         }
-                        .padding()
-                        .background(Color.blue.opacity(0.6))
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                        .shadow(radius: 4)
-                        .onTapGesture {
-                            createExampleChalendar()
-                        }
+                        .padding(.horizontal, 30)
+                        .padding(.top, 40)
                         
+                        HStack {
+                            Text("Motivational Pictures")
+                                .font(AppTheme.secondTitleFont())
+                                .foregroundColor(AppTheme.textPrimary)
+                            
+                            Spacer()
+                            
+                            Toggle("", isOn: $motivationalPictures)
+                                .labelsHidden()
+                        }
+                        .padding(.horizontal, 30)
+                        .padding(.top, 40)
+                        
+                        HStack {
+                            Text("Zodiac Sign Facts")
+                                .font(AppTheme.secondTitleFont())
+                                .foregroundColor(AppTheme.textPrimary)
+                            
+                            Spacer()
+                            
+                            Toggle("", isOn: $zodiacSignFacts)
+                                .labelsHidden()
+                        }
+                        .padding(.horizontal, 30)
+                        .padding(.top, 40)
+                        
+                        HStack {
+                            Text("Future Telling")
+                                .font(AppTheme.secondTitleFont())
+                                .foregroundColor(AppTheme.textPrimary)
+                            
+                            Spacer()
+                            
+                            Toggle("", isOn: $futureTelling)
+                                .labelsHidden()
+                        }
+                        .padding(.horizontal, 30)
+                        .padding(.top, 40)
+                        
+                        HStack {
+                            Text("Tarot cards")
+                                .font(AppTheme.secondTitleFont())
+                                .foregroundColor(AppTheme.textPrimary)
+                            
+                            Spacer()
+                            
+                            Toggle("", isOn: $tarotCards)
+                                .labelsHidden()
+                        }
+                        .padding(.horizontal, 30)
+                        .padding(.top, 40)
+                        
+                        Spacer()
+                        
+                        Button(action: {
+                            createExampleChalendar()
+                            navigateToCalendarView = true
+                        }) {
+                            HStack {
+                                Text("Create Calendar")
+                                Image(systemName: "calendar.badge.plus")
+                            }
+                            .font(AppTheme.bodyFontBold())
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(AppTheme.accentDark)
+                            .cornerRadius(10)
+                            .shadow(radius: 4)
+                        }
+                        .padding(.bottom, 20)
+                        .frame(maxWidth: .infinity, alignment: .center)
                     }
-                    Spacer()
                 }
-                .padding(.bottom, 20)
+                .navigationTitle("Calendar Content")
             }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            }
-            .navigationTitle("Calendar content")
-            .preferredColorScheme(.dark)
         }
     }
-    func createExampleChalendar() { 
+    func createExampleChalendar() {
         let csvFormat = generateCSVContent(for: exampleCalendar)
         saveCSVFile(content: csvFormat, fileName: "HolidayCalendar 18")
     }
