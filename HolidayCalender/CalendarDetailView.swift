@@ -110,13 +110,7 @@ struct CalendarDetailView: View {
     func loadCalendarDays() {
         if let folderURL = getFolderURL(folderName: "createdCalendars") {
             let fileURL = folderURL.appendingPathComponent("\(name).csv")
-            
             calendarDays = getCalender(fileURL: fileURL)
-            
-            // Debug: Print only loaded days
-            for day in calendarDays {
-                print("Loaded Day - Date: \(day.date), Background: \(day.background), Quote: \(day.quote)")
-            }
         }
     }
 
