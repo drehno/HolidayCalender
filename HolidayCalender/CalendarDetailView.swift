@@ -4,68 +4,50 @@ struct CalendarDetailView: View {
     @State private var showingShareSheet = false
     @State private var itemsToShare: [Any] = []
     @State private var navigateToMyCalendarsView = false
-
+    @State private var calendarDays: [CalendarDay] = []
     var name: String
     
     init(name: String) {
         self.name = name
+        dateFormatterSetup()
     }
 
     
     var body: some View {
-        Group {
-            if navigateToMyCalendarsView {
-                MyCalendarsView() // Navigate back to MyCalendarsView
-            } else {
-                ZStack {
-                    AppTheme.layeredGradient
+        NavigationStack {
+            ZStack {
+                AppTheme.layeredGradient
 
-                    VStack(alignment: .leading) {
-                        // Header
-                        HStack {
-                            Text(name)
-                                .font(AppTheme.titleFont())
+                VStack(alignment: .leading) {
+                    HStack {
+                        Text(name)
+                            .font(AppTheme.titleFont())
+                            .foregroundColor(AppTheme.textPrimary)
+                            .fontWeight(.bold)
+
+                        Spacer()
+
+                        Button(action: {
+                            deleteCSVFile(fileName: "\(name)")
+                            navigateToMyCalendarsView = true
+                        }) {
+                            Image(systemName: "trash")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 30, height: 30)
                                 .foregroundColor(AppTheme.textPrimary)
-                                .fontWeight(.bold)
-
-                            Spacer()
-
-                            
-                            Button(action: {
-                                deleteCSVFile(fileName: "\(name)") // Delete the file
-                                navigateToMyCalendarsView = true // Trigger navigation
-                            }) {
-                                Image(systemName: "trash")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 30, height: 30)
-                                    .foregroundColor(AppTheme.textPrimary)
-                                    .padding(8)
-                            }
+                                .padding(8)
                         }
-                        .padding(20)
+                    }
+                    .padding(20)
 
-                        
-                        ScrollView {
-                            LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 20) {
-                                ForEach(Array(exampleCalendar.enumerated()), id: \.offset) { index, entry in
-                                    if isToday(entry.date) {
-                                        NavigationLink(
-                                            destination: CalendarEntryView(entry: entry)
-                                        ) {
-                                            VStack(spacing: 1) {
-                                                VStack { EmptyView() }
-                                                    .frame(height: 100)
-                                                    .calendarWidgetStyle()
-
-                                                Text("\(dateFormatter.string(from: entry.date))")
-                                                    .font(AppTheme.bodyFont())
-                                                    .foregroundColor(AppTheme.textPrimary)
-                                                    .multilineTextAlignment(.center)
-                                                    .frame(height: 30)
-                                            }
-                                        }
-                                    } else {
+                    ScrollView {
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 20) {
+                            ForEach(calendarDays, id: \.date) { entry in
+                                if isToday(entry.date) {
+                                    NavigationLink(
+                                        destination: CalendarEntryView(entry: entry)
+                                    ) {
                                         VStack(spacing: 1) {
                                             VStack { EmptyView() }
                                                 .frame(height: 100)
@@ -78,34 +60,68 @@ struct CalendarDetailView: View {
                                                 .frame(height: 30)
                                         }
                                     }
+                                } else {
+                                    VStack(spacing: 1) {
+                                        VStack { EmptyView() }
+                                            .frame(height: 100)
+                                            .calendarWidgetStyle()
+
+                                        Text("\(dateFormatter.string(from: entry.date))")
+                                            .font(AppTheme.bodyFont())
+                                            .foregroundColor(AppTheme.textPrimary)
+                                            .multilineTextAlignment(.center)
+                                            .frame(height: 30)
+                                    }
                                 }
                             }
-                            .padding()
                         }
+                        .padding()
                     }
+                }
 
-                    
-                    VStack {
+                VStack {
+                    Spacer()
+                    HStack {
                         Spacer()
-                        HStack {
-                            Spacer()
-                            Button(action: { shareCalendar() }) {
-                                Image(systemName: "square.and.arrow.up")
-                                    .resizable()
-                                    .frame(width: 24, height: 24)
-                                    .foregroundColor(.white)
-                                    .padding(20)
-                                    .background(AppTheme.accentDark)
-                                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                                    .shadow(radius: 4)
-                            }
-                            .padding()
+                        Button(action: { shareCalendar() }) {
+                            Image(systemName: "square.and.arrow.up")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                                .foregroundColor(.white)
+                                .padding(20)
+                                .background(AppTheme.accentDark)
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                                .shadow(radius: 4)
                         }
+                        .padding()
                     }
                 }
             }
+            .onAppear {
+                loadCalendarDays()
+            }
+            .navigationDestination(isPresented: $navigateToMyCalendarsView) {
+                MyCalendarsView()
+                    .navigationBarBackButtonHidden(true)
+            }
         }
     }
+    
+    func loadCalendarDays() {
+        if let folderURL = getFolderURL(folderName: "createdCalendars") {
+            let fileURL = folderURL.appendingPathComponent("\(name).csv")
+            
+            calendarDays = getCalender(fileURL: fileURL)
+            
+            // Debug: Print only loaded days
+            for day in calendarDays {
+                print("Loaded Day - Date: \(day.date), Background: \(day.background), Quote: \(day.quote)")
+            }
+        }
+    }
+
+
+
     
     func createTextFile(withContent content: String) -> URL? {
         let fileName = "sharedCalendar.csv"
