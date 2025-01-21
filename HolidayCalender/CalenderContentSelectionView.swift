@@ -129,15 +129,16 @@ struct CalenderContentSelectionView: View {
         let sanitizedFileName = sanitizeFileName(title)
         
         var calendarDays: [CalendarDay] = []
-        let calendar = Calendar.current
-        var currentDate = startDate
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        let adjustedStartDate = calendar.startOfDay(for: startDate)
+        var currentDate = adjustedStartDate
         
         while currentDate <= endDate {
             let background = motivationalPictures ? "motivational_bg" : "default_bg"
             let quote = motivationalQuotes ? "Keep going!" : "default_quote"
             
             let day = CalendarDay(date: currentDate, background: background, quote: quote)
-            print("Generated Day - Date: \(currentDate)")
             calendarDays.append(day)
             currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate) ?? currentDate
         }
