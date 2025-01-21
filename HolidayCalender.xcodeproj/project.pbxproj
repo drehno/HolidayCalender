@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		81B67B7A2D3EA00D0026CC8A /* HolidayCalender.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = HolidayCalender.xcodeproj; sourceTree = "<group>"; };
+		81DAE77A2D4031B2008C3117 /* HolidayCalender.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = HolidayCalender.xcodeproj; sourceTree = "<group>"; };
 		AF7550762D3475100074D372 /* HolidayCalender.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HolidayCalender.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -42,6 +44,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		81B67B7B2D3EA00D0026CC8A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		81DAE7842D4031B2008C3117 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		AF75506D2D3475100074D372 = {
 			isa = PBXGroup;
 			children = (
@@ -110,6 +126,16 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = AF7550772D3475100074D372 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 81B67B7B2D3EA00D0026CC8A /* Products */;
+					ProjectRef = 81B67B7A2D3EA00D0026CC8A /* HolidayCalender.xcodeproj */;
+				},
+				{
+					ProductGroup = 81DAE7842D4031B2008C3117 /* Products */;
+					ProjectRef = 81DAE77A2D4031B2008C3117 /* HolidayCalender.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				AF7550752D3475100074D372 /* HolidayCalender */,

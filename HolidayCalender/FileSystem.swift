@@ -68,7 +68,7 @@ func getCalender(fileURL: URL) -> [CalendarDay] {
         var attributeCounter = 0
         var word = ""
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.yyyy"
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
         while let data = try fileHandle.read(upToCount: 1), !data.isEmpty {
             if let char = String(data: data, encoding: .utf8)
             {
@@ -84,7 +84,7 @@ func getCalender(fileURL: URL) -> [CalendarDay] {
                 word += char
             } else if attributeCounter % 3 == 1 {
                 if char == ";" {
-                    calendarDay.background = word 
+                    calendarDay.background = word
                     word = ""
                     attributeCounter += 1
                     continue
@@ -98,13 +98,13 @@ func getCalender(fileURL: URL) -> [CalendarDay] {
                     attributeCounter += 1
                     continue
                 }
-                word += char  
+                word += char
             }
             
             }
         }
     } catch {
-        print("Error reading calendar file")    
+        print("Error reading calendar file")
     }
     
     return calendar
