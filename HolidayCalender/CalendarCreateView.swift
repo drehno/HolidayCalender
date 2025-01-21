@@ -2,12 +2,14 @@ import SwiftUI
 
 struct CalendarCreateView: View {
     @State private var calendarTitle: String = ""
-   // @State private var dailyDoors = false
-   // @State private var howManyDoors: Int = 1
     @State private var startDate = Date()
     @State private var endDate = Date()
     @State private var navigateToContentSelection = false
     
+    private var isNextButtonDisabled: Bool {
+        calendarTitle.isEmpty || startDate > endDate
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -121,11 +123,11 @@ struct CalendarCreateView: View {
                             .foregroundColor(.white)
                             .font(AppTheme.bodyFontBold())
                             .padding()
-                            .background(AppTheme.accentDark)
+                            .background(isNextButtonDisabled ? AppTheme.accentDark.opacity(0.5) : AppTheme.accentDark)
                             .cornerRadius(10)
                             .shadow(radius: 4)
-                            .disabled(calendarTitle.isEmpty || startDate > endDate)
                         }
+                        .disabled(calendarTitle.isEmpty || startDate > endDate)
                         .padding(.trailing, 30)
                         .padding(.bottom, 20)
                     }
