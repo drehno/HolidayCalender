@@ -7,13 +7,13 @@ struct SectionHeaderView: View {
         HStack {
             // Section Title
             Text(title)
-                .font(AppTheme.titleFont()) // Title font from theme
-                .foregroundColor(AppTheme.textPrimary) // Theme color for text
+                .font(AppTheme.titleFont())
+                .foregroundColor(AppTheme.textPrimary)
                 .fontWeight(.bold)
 
             Spacer()
 
-            // Navigation Button with Smaller Settings Icon
+            // Navigation Button
             NavigationLink(destination: OptionsView()
                 .toolbar(.hidden, for: .tabBar)) {
                 Image(systemName: "gearshape")
@@ -24,8 +24,10 @@ struct SectionHeaderView: View {
                     .padding(8)
             }
         }
-        .padding(20)
+        .padding(25)
     }
 }
 
-
+#Preview {
+    MainTabView()
+}
