@@ -4,6 +4,7 @@ struct CalendarCreateView: View {
     @State private var calendarTitle: String = ""
     @State private var startDate = Date()
     @State private var endDate = Date()
+    @State private var birthDate = Date()
     @State private var navigateToContentSelection = false
     
     private var isNextButtonDisabled: Bool {
@@ -31,6 +32,24 @@ struct CalendarCreateView: View {
                                 .cornerRadius(10)
                                 .padding(.horizontal, 30)
                                 .font(AppTheme.bodyFont())
+                            
+                            // Birth Date
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("Your Birthday")
+                                    .font(AppTheme.secondTitleFont())
+                                    .foregroundColor(AppTheme.textPrimary)
+                                
+                                DatePicker("", selection: $birthDate, displayedComponents: [.date])
+                                    .datePickerStyle(.wheel)
+                                    .frame(height: 50)
+                                    .padding(10)
+                                    .cornerRadius(10)
+                                    .labelsHidden()
+                                    .accessibilityLabel("Select your birthday")
+                            }
+                            .padding(.horizontal, 30)
+                            .padding(.top, 30)
+
                             
                             // Daily Doors Toggle
                             /*
