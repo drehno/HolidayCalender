@@ -36,12 +36,12 @@ struct SharedCalendarsView: View {
                             }
                         }
                     }
+                    .padding()
                 }
             }
             .onAppear {
                 sharedCalendars = getAllCalendarNames(folderName: folderName)
             }
-            .padding()
         }
     }
 }
