@@ -170,7 +170,7 @@ struct CalendarDetailView: View {
     
     func shareCalendar() {
         // Sample CSV content
-        let csvContent = generateCSVContent(for: exampleCalendar)
+        let csvContent = generateCSVContent(for: calendarDays)
         
         // Create a temporary file URL for the CSV file
         let fileName = self.name + ".csv"
