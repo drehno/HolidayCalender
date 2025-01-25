@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct OptionsView: View {
+    @Environment(\.colorScheme) private var colorScheme
+    @AppStorage("isDarkModeEnabled") private var isDarkModeEnabled = false
     //TODO: Boolean wert ob das tor von einem kalender bereits geöffnet wurde und diesen in zeile 41 anstelle von isConditionMet einsetzen
     
     var body: some View {
@@ -14,33 +16,6 @@ struct OptionsView: View {
                         .foregroundColor(AppTheme.textPrimary)
                         .padding(.leading, 30)
                         .padding(.top, 40)
-                    
-                    //TODO: der button kann später entfernt werden und die aktion wird beim bspw starten der App ausgeführt
-                    Button(action: {
-                        UNUserNotificationCenter
-                            .current()
-                            .requestAuthorization(options: [.alert, .sound, .badge]) { success, error in
-                                if success {
-                                    print("permission granted")
-                                } else if let error = error {
-                                    print("permission denied: \(error.localizedDescription)")
-                                }
-                            }
-                    })
-                    {
-                        HStack {
-                            Text("Permission for Notifications")
-                                .font(AppTheme.secondTitleFont())
-                                .foregroundColor(AppTheme.textPrimary)
-                            
-                            Spacer()
-                        }
-                        .padding()
-                        .background(AppTheme.accentDark.opacity(0.3))
-                        .cornerRadius(10)
-                    }
-                    .padding(.horizontal, 30)
-                    .padding(.top, 20)
                     
                     Button(action: {
                         scheduleDailyNotification(hour: 20, minute: 0, isConditionMet: false)
@@ -59,10 +34,42 @@ struct OptionsView: View {
                     .padding(.horizontal, 30)
                     .padding(.top, 20)
                     
+                    HStack {
+                        Text("Dark Mode")
+                            .font(AppTheme.secondTitleFont())
+                            .foregroundColor(AppTheme.textPrimary)
+                                            
+                        Spacer()
+                                            
+                        Toggle("", isOn: $isDarkModeEnabled)
+                            .labelsHidden()
+                            .onChange(of: isDarkModeEnabled) { oldValue, newValue in
+                                updateColorScheme(newValue)
+                            }
+                    }
+                    .padding(.horizontal, 30)
+                    .padding(.top, 20)
+                    
                     Spacer()
                 }
                 .frame(maxHeight: .infinity, alignment: .top)
             }
+        }
+    }
+}
+
+func requestNotificationPermission() {
+    let hasRequestedPermission = UserDefaults.standard.bool(forKey: "hasRequestedNotificationPermission")
+    
+    if !hasRequestedPermission {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { success, error in
+            if success {
+                print("Permission granted")
+            } else if let error = error {
+                print("Permission denied: \(error.localizedDescription)")
+            }
+            
+            UserDefaults.standard.set(true, forKey: "hasRequestedNotificationPermission")
         }
     }
 }
@@ -90,6 +97,15 @@ func scheduleDailyNotification(hour: Int, minute: Int, isConditionMet: Bool) {
     //create notification
     UNUserNotificationCenter.current().add(request)
 }
+
+private func updateColorScheme(_ isDarkModeEnabled: Bool) {
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+            let userInterfaceStyle: UIUserInterfaceStyle = isDarkModeEnabled ? .dark : .light
+            windowScene.windows.forEach { window in
+                window.overrideUserInterfaceStyle = userInterfaceStyle
+            }
+        }
+    }
 
 #Preview {
     OptionsView()

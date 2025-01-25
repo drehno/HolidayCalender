@@ -5,6 +5,7 @@ struct CalendarDetailView: View {
     @State private var itemsToShare: [Any] = []
     @State private var navigateToMyCalendarsView = false
     @State private var calendarDays: [CalendarDay] = []
+    @State private var showDeleteConfirmation = false
     var name: String
     
     init(name: String) {
@@ -28,8 +29,7 @@ struct CalendarDetailView: View {
                         Spacer()
 
                         Button(action: {
-                            deleteCSVFile(fileName: "\(name)")
-                            navigateToMyCalendarsView = true
+                            showDeleteConfirmation = true
                         }) {
                             Image(systemName: "trash")
                                 .resizable()
@@ -103,6 +103,16 @@ struct CalendarDetailView: View {
             .navigationDestination(isPresented: $navigateToMyCalendarsView) {
                 MyCalendarsView()
                     .navigationBarBackButtonHidden(true)
+            }
+            .alert("Delete Calendar", isPresented: $showDeleteConfirmation) {
+                Button("Cancel", role: .cancel) {
+                }
+                Button("Delete", role: .destructive) {
+                    deleteCSVFile(fileName: "\(name)")
+                    navigateToMyCalendarsView = true
+                }
+            } message: {
+                Text("Are you sure about deleting this calendar? This action is permanent!")
             }
         }
     }
