@@ -6,10 +6,6 @@ struct CalendarCreateView: View {
     @State private var endDate = Date()
     @State private var birthDate = Date()
     @State private var navigateToContentSelection = false
-    
-    private var isNextButtonDisabled: Bool {
-        calendarTitle.isEmpty || startDate > endDate
-    }
 
     var body: some View {
         NavigationStack {
@@ -32,6 +28,9 @@ struct CalendarCreateView: View {
                                 .cornerRadius(10)
                                 .padding(.horizontal, 30)
                                 .font(AppTheme.bodyFont())
+                                .onChange(of: calendarTitle) { _, newValue in
+                                    calendarTitle = filterTitle(newValue)
+                                }
                             
                             // Birth Date
                             VStack(alignment: .leading, spacing: 10) {
@@ -101,10 +100,13 @@ struct CalendarCreateView: View {
                                 
                                 Spacer()
                                 
-                                DatePicker("", selection: $startDate, displayedComponents: [.date])
+                                DatePicker("", selection: $startDate, in: Date()..., displayedComponents: [.date])
                                     .datePickerStyle(.compact)
                                     .cornerRadius(10)
                                     .accessibilityLabel("Select start date")
+                                    .onChange(of: startDate) { _, newValue in
+                                        startDate = max(newValue, Date())
+                                    }
                             }
                             .padding(.horizontal, 30)
                             .padding(.top, 30)
@@ -117,10 +119,13 @@ struct CalendarCreateView: View {
                                 
                                 Spacer()
                                 
-                                DatePicker("", selection: $endDate, displayedComponents: [.date])
+                                DatePicker("", selection: $endDate, in: startDate..., displayedComponents: [.date])
                                     .datePickerStyle(.compact)
                                     .cornerRadius(10)
                                     .accessibilityLabel("Select end date")
+                                    .onChange(of: endDate) { _, newValue in
+                                        endDate = max(newValue, Date())
+                                    }
                             }
                             .padding(.horizontal, 30)
                             .padding(.top, 30)
@@ -142,11 +147,11 @@ struct CalendarCreateView: View {
                             .foregroundColor(.white)
                             .font(AppTheme.bodyFontBold())
                             .padding()
-                            .background(isNextButtonDisabled ? AppTheme.accentDark.opacity(0.5) : AppTheme.accentDark)
+                            .background(calendarTitle.isEmpty ? AppTheme.accentDark.opacity(0.5) : AppTheme.accentDark)
                             .cornerRadius(10)
                             .shadow(radius: 4)
                         }
-                        .disabled(calendarTitle.isEmpty || startDate > endDate)
+                        .disabled(calendarTitle.isEmpty)
                         .padding(.trailing, 30)
                         .padding(.bottom, 20)
                     }
@@ -155,4 +160,8 @@ struct CalendarCreateView: View {
             .navigationTitle("Create Your Calendar")
         }
     }
+}
+
+private func filterTitle(_ input: String) -> String {
+    return input.filter { $0.isLetter || $0.isNumber || $0.isWhitespace }
 }
