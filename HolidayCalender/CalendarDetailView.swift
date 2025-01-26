@@ -65,7 +65,11 @@ struct CalendarDetailView: View {
                                 VStack {
                                     if isToday(calendarDays[index].date) {
                                         NavigationLink(
-                                            destination: CalendarEntryView(entry: calendarDays[index], calendarName: self.name, calendarEntryNumber: index + 1)
+                                            destination: CalendarEntryView(
+                                                entry: calendarDays[index],
+                                                calendarName: self.name,
+                                                calendarEntryNumber: index + 1
+                                            )
                                         ) {
                                             VStack {
                                                 Text("Today")
@@ -129,14 +133,19 @@ struct CalendarDetailView: View {
                 }
                 Button("Delete", role: .destructive) {
                     deleteCSVFile(fileName: "\(name)")
-                    navigateToMyCalendarsView = true
+                    navigateToMyCalendarsView = true // Trigger navigation
                 }
             } message: {
                 Text("Are you sure about deleting this calendar? This action is permanent!")
             }
+            .navigationDestination(isPresented: $navigateToMyCalendarsView) {
+                MyCalendarsView()
+                    .navigationBarBackButtonHidden(true) // Ensure no back button appears
+            }
         }
     }
-    
+
+
     // Find today's date and set it as the initial index
     func setInitialDateIndex() {
         if let todayIndex = calendarDays.firstIndex(where: { isToday($0.date) }) {
