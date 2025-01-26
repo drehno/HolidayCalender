@@ -12,6 +12,7 @@ struct CalenderContentSelectionView: View {
     @State private var futureTelling = false
     @State private var tarotCards = false
     @State private var navigateToCalendarView = false
+    @State private var showError = false
     
     private var zodiacSign: String {
         getZodiacSign(for: birthDate)
@@ -37,7 +38,7 @@ struct CalenderContentSelectionView: View {
                     }
                     .padding(.horizontal, 30)
                     .padding(.top, 40)
-                    
+                    /*
                     HStack {
                         Text("Motivational Pictures")
                             .font(AppTheme.secondTitleFont())
@@ -50,7 +51,7 @@ struct CalenderContentSelectionView: View {
                     }
                     .padding(.horizontal, 30)
                     .padding(.top, 40)
-                    
+                    */
                     HStack {
                         Text("Zodiac Sign Facts")
                             .font(AppTheme.secondTitleFont())
@@ -63,7 +64,7 @@ struct CalenderContentSelectionView: View {
                     }
                     .padding(.horizontal, 30)
                     .padding(.top, 40)
-                    
+                    /*
                     HStack {
                         Text("Future Telling")
                             .font(AppTheme.secondTitleFont())
@@ -76,8 +77,8 @@ struct CalenderContentSelectionView: View {
                     }
                     .padding(.horizontal, 30)
                     .padding(.top, 40)
-                    
-                    HStack {
+                    */
+                    /*HStack {
                         Text("Tarot cards")
                             .font(AppTheme.secondTitleFont())
                             .foregroundColor(AppTheme.textPrimary)
@@ -89,12 +90,24 @@ struct CalenderContentSelectionView: View {
                     }
                     .padding(.horizontal, 30)
                     .padding(.top, 40)
+                    */
+                    if showError {
+                        Text("Please enable at least one category to proceed")
+                            .font(.caption)
+                            .foregroundColor(.red)
+                            .padding(.horizontal, 30)
+                    }
                     
                     Spacer()
                     
                     Button(action: {
-                        createCalendar()
-                        navigateToCalendarView = true
+                        if !motivationalQuotes && !zodiacSignFacts {
+                            triggerVibration()
+                            showError = true 
+                        } else {
+                            createCalendar()
+                            navigateToCalendarView = true
+                        }
                     }) {
                         HStack {
                             Text("Create Calendar")
@@ -164,5 +177,10 @@ struct CalenderContentSelectionView: View {
         saveCSVFile(content: csvContent, fileName: sanitizedFileName)
     }
 
+    private func triggerVibration() {
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.error)
+    }
+    
 }
 
