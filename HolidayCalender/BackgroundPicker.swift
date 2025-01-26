@@ -7,7 +7,7 @@ struct BackgroundPicker: View {
     let calendarName : String
     let dayNumber : Int
     
-    let availableBackgrounds = ["b1", "b2", "b3", "b4", "b5", "b6"]
+    let availableBackgrounds = ["b1", "b2", "b3", "b4", "b5", "b6", "b7"]
     
     init(name: String, day: Int, onBackgroundSelected: ((String) -> Void)? = nil)
     {
