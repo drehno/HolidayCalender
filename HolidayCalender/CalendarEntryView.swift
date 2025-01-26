@@ -13,7 +13,8 @@ struct CalendarEntryView: View {
     
     init(entry: CalendarDay) {
         self.entry = entry
-        backgroundImage = convertBackgroundName(name: entry.background)
+        self.backgroundImage = entry.background
+       // backgroundImage = convertBackgroundName(name: entry.background)
     }
     
     var body: some View {
@@ -42,14 +43,16 @@ struct CalendarEntryView: View {
                         shareEntry()
                     }) {
                         Image(systemName: "square.and.arrow.up")
-                            .font(.title)
-                            .padding()
-                            .background(Color.blue)
+                            .resizable()
+                            .frame(width: 24, height: 24)
                             .foregroundColor(.white)
-                            .clipShape(Circle())
+                            .padding(20)
+                            .background(AppTheme.accentDark)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                            .shadow(radius: 4)
                     }
                     .padding(.trailing, 30)
-                    .padding(.bottom, 20)
+                    .padding(.bottom, 30)
                 }
             }
         }

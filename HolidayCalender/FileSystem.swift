@@ -180,8 +180,8 @@ func getAllCalendarBackgrounds(folderName: String) -> [String] {
             if fileManager.fileExists(atPath: fileURL.path, isDirectory: &isDirectory), !isDirectory.boolValue {
                 // Process the file
                 if let result = getABackground(fileName: fileURL.path) {
-                    let convertedName = convertBackgroundName(name: result)
-                    fileBackgrounds.append(convertedName)
+                   // let convertedName = convertBackgroundName(name: result)
+                    fileBackgrounds.append(result)
                 } else {
                     print("File: \(fileURL.lastPathComponent), no valid content found between semicolons.")
                 }
@@ -194,7 +194,8 @@ func getAllCalendarBackgrounds(folderName: String) -> [String] {
     return fileBackgrounds
 }
 
-func convertBackgroundName(name: String) -> String 
+/*
+func convertBackgroundName(name: String) -> String
 {
     var filename : String = ""
     switch name {
@@ -209,3 +210,4 @@ func convertBackgroundName(name: String) -> String
     }    
     return filename
 }
+*/
