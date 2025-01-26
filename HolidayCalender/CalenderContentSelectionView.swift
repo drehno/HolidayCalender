@@ -137,24 +137,32 @@ struct CalenderContentSelectionView: View {
         let facts = zodiacSignFacts ? content.facts : []
                 
         while currentDate <= endDate {
-                var dayContent: String = ""
-
-                if !quotes.isEmpty && Bool.random() {
-                    dayContent = quotes.randomElement() ?? ""
-                } else if !facts.isEmpty {
-                    dayContent = facts.randomElement() ?? ""
-                }
+            var dayContent: String = ""
             
-                let background = ["b1", "b2", "b3"].randomElement() ?? "b1"
-
-                let day = CalendarDay(date: currentDate, background: background, quote: dayContent)
-                calendarDays.append(day)
-
-                currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate) ?? currentDate
+            if !quotes.isEmpty {
+                let randomQuote = quotes.randomElement() ?? ""
+                dayContent += randomQuote
             }
+            
+            if !facts.isEmpty {
+                let randomFact = facts.randomElement() ?? ""
+                if !dayContent.isEmpty {
+                    dayContent += "\n"
+                }
+                dayContent += randomFact
+            }
+            
+            let background = ["b1", "b2", "b3"].randomElement() ?? "b1"
+
+            let day = CalendarDay(date: currentDate, background: background, quote: dayContent)
+            calendarDays.append(day)
+            
+            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate) ?? currentDate
+        }
         
         let csvContent = generateCSVContent(for: calendarDays)
         saveCSVFile(content: csvContent, fileName: sanitizedFileName)
     }
+
 }
 
