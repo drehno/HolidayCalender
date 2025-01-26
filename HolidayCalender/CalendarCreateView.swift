@@ -12,7 +12,6 @@ struct CalendarCreateView: View {
     @State private var autocorrectingTitle: Bool = false
     @State private var showDuplicateTitleError: Bool = false
     
-    // FocusState to track whether the TextField is focused
     @FocusState private var isTextFieldFocused: Bool
     
     var body: some View {
@@ -66,7 +65,7 @@ struct CalendarCreateView: View {
                                     .foregroundColor(.red)
                                     .padding(.horizontal, 30)
                             }
-                            // Error Message for empty title
+                            // Error Message for duplicated title
                             if showDuplicateTitleError {
                                 Text("There is already another calendar with the same title.")
                                     .font(.caption)
@@ -132,33 +131,41 @@ struct CalendarCreateView: View {
                     
                     Spacer()
                     
-                    // Next Button
                     HStack {
                         Spacer()
-                        Button {
-                            if calendarTitle.isEmpty {
-                                showDuplicateTitleError = false
-                                showEmptyTitleError = true 
-                                triggerVibration()
-                            } else if 
-                                getAllCalendarNames(folderName: "createdCalendars").contains(calendarTitle)
-                            {
-                                showDuplicateTitleError = true
-                            } else {
-                                navigateToContentSelection = true // Navigate to next screen
+                        NavigationLink(
+                            destination: CalenderContentSelectionView(
+                                calendarTitle: calendarTitle,
+                                birthDate: birthDate,
+                                startDate: startDate,
+                                endDate: endDate
+                            )){
+                            Button (action: {
+                                if calendarTitle.isEmpty {
+                                    showDuplicateTitleError = false
+                                    showEmptyTitleError = true
+                                    triggerVibration()
+                                } else if getAllCalendarNames(folderName: "createdCalendars").contains(calendarTitle) {
+                                    showEmptyTitleError = false
+                                    showDuplicateTitleError = true
+                                    triggerVibration()
+                                } else {
+                                    showEmptyTitleError = false
+                                    showDuplicateTitleError = false
+                                    navigateToContentSelection = true
+                                }
+                            }){
+                                HStack {
+                                    Text("Next")
+                                    Image(systemName: "chevron.right")
+                                }
+                                .foregroundColor(.white)
+                                .font(AppTheme.bodyFontBold())
+                                .padding()
+                                .background(calendarTitle.isEmpty ? AppTheme.accentDark.opacity(0.5) : AppTheme.accentDark)
+                                .cornerRadius(10)
+                                .shadow(radius: 4)
                             }
-                            
-                        } label: {
-                            HStack {
-                                Text("Next")
-                                Image(systemName: "chevron.right")
-                            }
-                            .foregroundColor(.white)
-                            .font(AppTheme.bodyFontBold())
-                            .padding()
-                            .background(calendarTitle.isEmpty ? AppTheme.accentDark.opacity(0.5) : AppTheme.accentDark)
-                            .cornerRadius(10)
-                            .shadow(radius: 4)
                         }
                         .padding(.trailing, 30)
                         .padding(.bottom, 20)
@@ -174,11 +181,6 @@ struct CalendarCreateView: View {
                     }
                     .foregroundColor(.blue)
                 }
-            }
-            .navigationDestination(isPresented: $navigateToContentSelection) {
-                CalenderContentSelectionView(
-                    calendarTitle: calendarTitle, birthDate: birthDate, startDate: startDate, endDate: endDate
-                )
             }
         }
     }
