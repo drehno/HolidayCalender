@@ -55,25 +55,6 @@ struct SharedCalendarsView: View {
                     .padding()
                 }
             }
-            
-            VStack {
-                Spacer()
-                HStack {
-                    Spacer()
-                    NavigationLink(destination: CalendarCreateView()
-                        .toolbar(.hidden, for: .tabBar)) {
-                            Image(systemName: "plus")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(.white)
-                                .padding(20)
-                                .background(AppTheme.accentDark)
-                                .clipShape(RoundedRectangle(cornerRadius: 16))
-                                .shadow(radius: 4)
-                        }
-                        .padding()
-                }
-            }
         }
         .onAppear {
             createdCalendars = getAllCalendarNames(folderName: folderName)

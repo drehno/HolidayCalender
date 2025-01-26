@@ -132,6 +132,7 @@ struct CalendarCreateView: View {
                     Spacer()
                     
                     HStack {
+                        Spacer()
                         Button {
                             if calendarTitle.isEmpty {
                                 showDuplicateTitleError = false

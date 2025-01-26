@@ -165,7 +165,7 @@ struct CalenderContentSelectionView: View {
                 dayContent += randomFact
             }
             
-            let background = ["b1", "b2", "b3"].randomElement() ?? "b1"
+            let background = ["b1", "b2", "b3", "b4", "b5", "b6"].randomElement() ?? "b1"
 
             let day = CalendarDay(date: currentDate, background: background, quote: dayContent)
             calendarDays.append(day)
