@@ -140,3 +140,72 @@ func getAllCalendarNames(folderName: String) -> [String] {
         return []
     }
 }
+
+func getABackground(fileName: String) -> String?{
+    do {
+        let fileContent = try String(contentsOfFile: fileName, encoding: .utf8)
+        
+        // Split the content by ";"
+        let parts = fileContent.split(separator: ";", maxSplits: 2, omittingEmptySubsequences: false)
+        
+        if parts.count > 1 {
+            // Return the string between the first two semicolons
+            return String(parts[1])
+        } else {
+            // Return nil if less than two semicolons are found
+            return nil
+        }
+    } catch {
+        print("Error reading file: \(error.localizedDescription)")
+        return nil
+    }
+}
+
+func getAllCalendarBackgrounds(folderName: String) -> [String] {
+    guard let folderURL = getFolderURL(folderName: folderName) else {
+        print("Invalid folder URL.")
+        return []
+    }
+    
+    let fileManager = FileManager.default
+    var fileBackgrounds: [String] = []
+    
+    do {
+        // Get all file paths in the folder
+        let files = try fileManager.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: nil)
+        
+        for fileURL in files {
+            // Check if it's a file (not a directory)
+            var isDirectory: ObjCBool = false
+            if fileManager.fileExists(atPath: fileURL.path, isDirectory: &isDirectory), !isDirectory.boolValue {
+                // Process the file
+                if let result = getABackground(fileName: fileURL.path) {
+                    let convertedName = convertBackgroundName(name: result)
+                    fileBackgrounds.append(convertedName)
+                } else {
+                    print("File: \(fileURL.lastPathComponent), no valid content found between semicolons.")
+                }
+            }
+        }
+    } catch {
+        print("Error accessing folder: \(error.localizedDescription)")
+    }
+    
+    return fileBackgrounds
+}
+
+func convertBackgroundName(name: String) -> String 
+{
+    var filename : String = ""
+    switch name {
+        case "b1":
+            filename = "moon-7744608_1920"
+        case "b2":
+            filename = "mountains-5993080_1920_11zon"
+        case "b3":
+            filename = "astrology (3)"
+        default:
+            filename = "astrology (3)"
+    }    
+    return filename
+}

@@ -13,16 +13,7 @@ struct CalendarEntryView: View {
     
     init(entry: CalendarDay) {
         self.entry = entry
-        switch entry.background {
-            case "b1":
-                backgroundImage = "moon-7744608_1920"
-            case "b2":
-                backgroundImage = "mountains-5993080_1920_11zon"
-            case "b3":
-                backgroundImage = "astrology (3)"
-            default:
-                backgroundImage = "astrology (3)"
-        }
+        backgroundImage = convertBackgroundName(name: entry.background)
     }
     
     var body: some View {
