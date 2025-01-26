@@ -35,7 +35,6 @@ struct CalendarEntryView: View {
                     .cornerRadius(20)
                     .padding(20)
                     .onAppear {
-                        // Calculate the adjusted size dynamically
                         let padding: CGFloat = 20
                         size = proxy.size
                         size.width -= padding * 2 
@@ -56,7 +55,6 @@ struct CalendarEntryView: View {
                             .resizable()
                             .frame(width: 30, height: 30)
                             .foregroundColor(.white)
-                            .padding(20)
                             .shadow(radius: 4)
                     }
                     .sheet(isPresented: $showImagePicker) {
@@ -78,11 +76,11 @@ struct CalendarEntryView: View {
                             .shadow(radius: 4)
                     }
                 }
-                .padding(.trailing, 20)
-                .padding(.top, 20)
                 
                 Spacer()
             }
+            .padding([.trailing], 5)
+            .padding([.top], 10)
         }
     }
     
@@ -152,9 +150,8 @@ struct CalendarEntryView: View {
         let controller = UIHostingController(rootView: mainContentView)
         let view = controller.view
         
-        // Define the target size explicitly (without padding)
         let targetSize = CGSize(
-            width: size.width, // Subtract padding
+            width: size.width - 10, // Subtract padding
             height: size.height - 80 // Subtract padding
         )
         view?.bounds = CGRect(origin: .zero, size: targetSize)
