@@ -8,7 +8,7 @@ struct CalendarCreateView: View {
     @State private var birthDate = Date()
     @State private var navigateToContentSelection = false
     @State private var showError: Bool = false
-    @State private var showEmptyTitleError: Bool = false 
+    @State private var showEmptyTitleError: Bool = false
     @State private var autocorrectingTitle: Bool = false
     @State private var showDuplicateTitleError: Bool = false
     
@@ -45,7 +45,7 @@ struct CalendarCreateView: View {
                                     } else if !autocorrectingTitle {
                                         showError = false
                                     } else {
-                                        autocorrectingTitle = false    
+                                        autocorrectingTitle = false
                                     }
                                     calendarTitle = filteredValue
                                 }
@@ -132,58 +132,53 @@ struct CalendarCreateView: View {
                     Spacer()
                     
                     HStack {
-                        Spacer()
-                        NavigationLink(
-                            destination: CalenderContentSelectionView(
-                                calendarTitle: calendarTitle,
-                                birthDate: birthDate,
-                                startDate: startDate,
-                                endDate: endDate
-                            )){
-                            Button (action: {
-                                if calendarTitle.isEmpty {
-                                    showDuplicateTitleError = false
-                                    showEmptyTitleError = true
-                                    triggerVibration()
-                                } else if getAllCalendarNames(folderName: "createdCalendars").contains(calendarTitle) {
-                                    showEmptyTitleError = false
-                                    showDuplicateTitleError = true
-                                    triggerVibration()
-                                } else {
-                                    showEmptyTitleError = false
-                                    showDuplicateTitleError = false
-                                    navigateToContentSelection = true
-                                }
-                            }){
-                                HStack {
-                                    Text("Next")
-                                    Image(systemName: "chevron.right")
-                                }
-                                .foregroundColor(.white)
-                                .font(AppTheme.bodyFontBold())
-                                .padding()
-                                .background(calendarTitle.isEmpty ? AppTheme.accentDark.opacity(0.5) : AppTheme.accentDark)
-                                .cornerRadius(10)
-                                .shadow(radius: 4)
+                        Button {
+                            if calendarTitle.isEmpty {
+                                showDuplicateTitleError = false
+                                showEmptyTitleError = true
+                                triggerVibration()
+                            } else if getAllCalendarNames(folderName: "createdCalendars").contains(calendarTitle) {
+                                showEmptyTitleError = false
+                                showDuplicateTitleError = true
+                                triggerVibration()
+                            } else {
+                                showEmptyTitleError = false
+                                showDuplicateTitleError = false
+                                navigateToContentSelection = true
                             }
+                        } label: {
+                            Text("Next")
+                            Image(systemName: "chevron.right")
                         }
-                        .padding(.trailing, 30)
-                        .padding(.bottom, 20)
+                        .foregroundColor(.white)
+                        .font(AppTheme.bodyFontBold())
+                        .padding()
+                        .background(calendarTitle.isEmpty ? AppTheme.accentDark.opacity(0.5) : AppTheme.accentDark)
+                        .cornerRadius(10)
+                        .shadow(radius: 4)
                     }
-                }
-            }
-            .navigationTitle("Create Your Calendar")
-            .toolbar {
-                ToolbarItemGroup(placement: .keyboard) {
-                    Spacer() 
-                    Button("Done") {
-                        isTextFieldFocused = false // Dismiss the keyboard
-                    }
-                    .foregroundColor(.blue)
+                    .padding(.trailing, 30)
+                    .padding(.bottom, 20)
                 }
             }
         }
+        .navigationTitle("Create Your Calendar")
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Done") {
+                    isTextFieldFocused = false // Dismiss the keyboard
+                }
+                .foregroundColor(.blue)
+            }
+        }
+        .navigationDestination(isPresented: $navigateToContentSelection) {
+            CalenderContentSelectionView(calendarTitle: calendarTitle, birthDate: birthDate, startDate: startDate, endDate: endDate)
+        }
     }
+
+
+
     
     private func filterTitle(_ input: String) -> String {
         return input.filter { $0.isLetter || $0.isNumber || $0.isWhitespace }

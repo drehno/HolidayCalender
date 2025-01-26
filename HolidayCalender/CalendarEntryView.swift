@@ -8,7 +8,6 @@ struct CalendarEntryView: View {
     @State private var createdCalendars: [String] = []
     @State private var selectedBackground: String 
     @State private var showImagePicker = false
-    @State private var showButtons = false
     @State private var shareImage: UIImage? = nil
     @State private var isSharing = false
     
@@ -46,68 +45,43 @@ struct CalendarEntryView: View {
             
             // Share button (not included in the rendered image)
             VStack {
-                Spacer()
                 HStack {
                     Spacer()
-                    ZStack {
-                        VStack {
-                            Spacer()
-                            
-                            // Action Buttons (Edit and Share)
-                            if showButtons {
-                                VStack(spacing: 10) {
-                                    // Edit Button
-                                    Button(action: {
-                                        showImagePicker.toggle()
-                                    }) {
-                                        Image(systemName: "pencil")
-                                            .resizable()
-                                            .frame(width: 30, height: 30)
-                                            .foregroundColor(.white)
-                                            .padding(20)
-                                            .shadow(radius: 4)
-                                    }
-                                    .transition(.move(edge: .bottom).combined(with: .opacity))
-                                    .sheet(isPresented: $showImagePicker) {
-                                        BackgroundPicker(name: calendarName, day: calendarEntryNumber, onBackgroundSelected: { newBackground in
-                                            selectedBackground = newBackground // Update the selected background
-                                            showImagePicker = false // Dismiss the sheet
-                                        })
-                                    }
-                                    
-                                    // Share Button
-                                    Button(action: {
-                                        shareEntry()
-                                    }) {
-                                        Image(systemName: "square.and.arrow.up")
-                                            .resizable()
-                                            .frame(width: 30, height: 30)
-                                            .foregroundColor(.white)
-                                            .padding(20)
-                                            .shadow(radius: 4)
-                                    }
-                                    .transition(.move(edge: .bottom).combined(with: .opacity))
-                                }
-                            }
-                            
-                            // Ellipsis Button
-                            Button(action: {
-                                withAnimation {
-                                    showButtons.toggle()
-                                }
-                            }) {
-                                Image(systemName: "ellipsis.circle")
-                                    .resizable()
-                                    .frame(width: 40, height: 40)
-                                    .foregroundColor(.white)
-                                    .padding(20)
-                                    .shadow(radius: 4)
-                            }
-                            .padding(.bottom, 30)
-                        }
-                        .padding(.trailing, 30)
+                    
+                    // Edit Button
+                    Button(action: {
+                        showImagePicker.toggle()
+                    }) {
+                        Image(systemName: "pencil")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(.white)
+                            .padding(20)
+                            .shadow(radius: 4)
+                    }
+                    .sheet(isPresented: $showImagePicker) {
+                        BackgroundPicker(name: calendarName, day: calendarEntryNumber, onBackgroundSelected: { newBackground in
+                            selectedBackground = newBackground
+                            showImagePicker = false
+                        })
+                    }
+                    
+                    // Share Button
+                    Button(action: {
+                        shareEntry()
+                    }) {
+                        Image(systemName: "square.and.arrow.up")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(.white)
+                            .padding(20)
+                            .shadow(radius: 4)
                     }
                 }
+                .padding(.trailing, 20)
+                .padding(.top, 20)
+                
+                Spacer()
             }
         }
     }
