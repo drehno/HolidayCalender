@@ -12,7 +12,6 @@ struct CalendarDetailView: View {
         self.name = name
         dateFormatterSetup()
     }
-
     
     var body: some View {
         NavigationStack {
@@ -124,9 +123,6 @@ struct CalendarDetailView: View {
         }
     }
 
-
-
-    
     func createTextFile(withContent content: String) -> URL? {
         let fileName = "sharedCalendar.csv"
         let fileManager = FileManager.default
@@ -139,42 +135,6 @@ struct CalendarDetailView: View {
         } catch {
             print("Error writing text file: \(error)")
             return nil
-        }
-    }
-
-    
-    func shareTextFileAndLink() {
-        let textContent = "This is the content of the text file."
-        if let fileURL = createTextFile(withContent: textContent) {
-            let shareURL = URL(string: "holidaycalendar://home")!
-            itemsToShare = [fileURL, shareURL]
-            showingShareSheet = true
-            
-            
-            do {
-                // Write the CSV content to the file
-                try textContent
-                    .write(to: fileURL, atomically: true, encoding: .utf8)
-                
-                // Construct the custom URL to open your app
-                let customURL = URL(string: "holidaycalendar://open?file=\(fileURL.absoluteString)")!
-                
-                // Share the file via WhatsApp
-                let activityViewController = UIActivityViewController(activityItems: [customURL], applicationActivities: nil)
-                
-                
-                // Present the share sheet
-                if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                    if let rootViewController = scene.windows.first?.rootViewController {
-                        rootViewController.present(activityViewController, animated: true, completion: nil)
-                    }
-                }
-                
-            } catch {
-                print("Error writing CSV file: \(error)")
-            }
-        } else {
-            print("Failed to create text file.")
         }
     }
     
@@ -192,10 +152,9 @@ struct CalendarDetailView: View {
             // Write the CSV content to the file
             try csvContent.write(to: fileURL, atomically: true, encoding: .utf8)
             
-            // Construct the custom URL to open your app
+            // Construct the custom URL
             let customURL = "holidaycalendar://open?file=\(fileURL.lastPathComponent)"
             
-            // Share the file via WhatsApp
             let activityViewController = UIActivityViewController(activityItems: [fileURL, customURL], applicationActivities: nil)
             
             // Present the share sheet in a safe way
@@ -210,8 +169,6 @@ struct CalendarDetailView: View {
         }
     }
 }
-
-
 
 #Preview {
     CalendarDetailView(name: "cal1")

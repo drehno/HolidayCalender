@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct CalendarCreateView: View {
     @State private var calendarTitle: String = ""
@@ -6,7 +7,14 @@ struct CalendarCreateView: View {
     @State private var endDate = Date()
     @State private var birthDate = Date()
     @State private var navigateToContentSelection = false
-
+    @State private var showError: Bool = false
+    @State private var showEmptyTitleError: Bool = false 
+    @State private var autocorrectingTitle: Bool = false
+    @State private var showDuplicateTitleError: Bool = false
+    
+    // FocusState to track whether the TextField is focused
+    @FocusState private var isTextFieldFocused: Bool
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -28,10 +36,44 @@ struct CalendarCreateView: View {
                                 .cornerRadius(10)
                                 .padding(.horizontal, 30)
                                 .font(AppTheme.bodyFont())
+                                .focused($isTextFieldFocused) 
                                 .onChange(of: calendarTitle) { _, newValue in
-                                    calendarTitle = filterTitle(newValue)
+                                    let filteredValue = filterTitle(newValue)
+                                    if filteredValue != newValue {
+                                        showError = true
+                                        autocorrectingTitle = true
+                                        triggerVibration()
+                                    } else if !autocorrectingTitle {
+                                        showError = false
+                                        print("show error false!") 
+                                    } else {
+                                        autocorrectingTitle = false    
+                                    }
+                                    calendarTitle = filteredValue
                                 }
                             
+                            // Error Message for invalid characters
+                            if showError {
+                                Text("Only letters, numbers, and spaces are allowed.")
+                                    .font(.caption)
+                                    .foregroundColor(.red)
+                                    .padding(.horizontal, 30)
+                            }
+                            
+                            // Error Message for empty title
+                            if showEmptyTitleError {
+                                Text("Please enter a calendar title.")
+                                    .font(.caption)
+                                    .foregroundColor(.red)
+                                    .padding(.horizontal, 30)
+                            }
+                            // Error Message for empty title
+                            if showDuplicateTitleError {
+                                Text("There is already another calendar with the same title.")
+                                    .font(.caption)
+                                    .foregroundColor(.red)
+                                    .padding(.horizontal, 30)
+                            }
                             // Birth Date
                             VStack(alignment: .leading, spacing: 10) {
                                 Text("Your Birthday")
@@ -48,49 +90,6 @@ struct CalendarCreateView: View {
                             }
                             .padding(.horizontal, 30)
                             .padding(.top, 30)
-
-                            
-                            // Daily Doors Toggle
-                            /*
-                             HStack {
-                             Text("Daily Doors")
-                             .font(AppTheme.secondTitleFont())
-                             .foregroundColor(AppTheme.textPrimary)
-                             
-                             Spacer()
-                             
-                             Toggle("", isOn: $dailyDoors)
-                             .labelsHidden()
-                             }
-                             .padding(.horizontal, 30)
-                             .padding(.top, 40)
-                             */
-                            
-                            /*
-                             // Number of Doors Picker
-                             HStack {
-                             Text("Number of Doors")
-                             .font(AppTheme.secondTitleFont())
-                             .foregroundColor(AppTheme.textPrimary)
-                             
-                             Spacer()
-                             
-                             Picker("Choose a number", selection: $howManyDoors) {
-                             ForEach(1...365, id: \.self) { number in
-                             Text("\(number)")
-                             .font(AppTheme.bodyFont())
-                             .tag(number)
-                             }
-                             }
-                             .pickerStyle(.menu)
-                             .padding(10)
-                             .background(AppTheme.accentDark.opacity(0.3))
-                             .cornerRadius(10)
-                             .accessibilityLabel("Select number of doors")
-                             }
-                             .padding(.horizontal, 30)
-                             .padding(.top, 30)
-                             */
                             
                             // Starting Date
                             HStack {
@@ -137,9 +136,20 @@ struct CalendarCreateView: View {
                     // Next Button
                     HStack {
                         Spacer()
-                        NavigationLink(destination: CalenderContentSelectionView(
-                            calendarTitle: calendarTitle, startDate: startDate, endDate: endDate
-                        )) {
+                        Button {
+                            if calendarTitle.isEmpty {
+                                showDuplicateTitleError = false
+                                showEmptyTitleError = true 
+                                triggerVibration()
+                            } else if 
+                                getAllCalendarNames(folderName: "createdCalendars").contains(calendarTitle)
+                            {
+                                showDuplicateTitleError = true
+                            } else {
+                                navigateToContentSelection = true // Navigate to next screen
+                            }
+                            
+                        } label: {
                             HStack {
                                 Text("Next")
                                 Image(systemName: "chevron.right")
@@ -151,17 +161,35 @@ struct CalendarCreateView: View {
                             .cornerRadius(10)
                             .shadow(radius: 4)
                         }
-                        .disabled(calendarTitle.isEmpty)
                         .padding(.trailing, 30)
                         .padding(.bottom, 20)
                     }
                 }
             }
             .navigationTitle("Create Your Calendar")
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer() 
+                    Button("Done") {
+                        isTextFieldFocused = false // Dismiss the keyboard
+                    }
+                    .foregroundColor(.blue)
+                }
+            }
+            .navigationDestination(isPresented: $navigateToContentSelection) {
+                CalenderContentSelectionView(
+                    calendarTitle: calendarTitle, startDate: startDate, endDate: endDate
+                )
+            }
         }
     }
-}
-
-private func filterTitle(_ input: String) -> String {
-    return input.filter { $0.isLetter || $0.isNumber || $0.isWhitespace }
+    
+    private func filterTitle(_ input: String) -> String {
+        return input.filter { $0.isLetter || $0.isNumber || $0.isWhitespace }
+    }
+    
+    private func triggerVibration() {
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.error)
+    }
 }
