@@ -124,7 +124,7 @@ struct CalendarCreateView: View {
                                     .cornerRadius(10)
                                     .accessibilityLabel("Select end date")
                                     .onChange(of: endDate) { _, newValue in
-                                        endDate = max(newValue, Date())
+                                        endDate = max(newValue, startDate)
                                     }
                             }
                             .padding(.horizontal, 30)
@@ -138,7 +138,7 @@ struct CalendarCreateView: View {
                     HStack {
                         Spacer()
                         NavigationLink(destination: CalenderContentSelectionView(
-                            calendarTitle: calendarTitle, startDate: startDate, endDate: endDate
+                            calendarTitle: calendarTitle,birthDate: birthDate, startDate: startDate, endDate: endDate
                         )) {
                             HStack {
                                 Text("Next")
