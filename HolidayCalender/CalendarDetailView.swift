@@ -7,7 +7,7 @@ struct CalendarDetailView: View {
     @State private var calendarDays: [CalendarDay] = []
     @State private var showDeleteConfirmation = false
     
-    @State private var tinyURL: String? = nil // State to store the generated TinyURL
+    @State private var currentIndex: Int = 0 // Track the currently centered date
     var name: String
     
     init(name: String) {
@@ -19,16 +19,17 @@ struct CalendarDetailView: View {
         NavigationStack {
             ZStack {
                 AppTheme.layeredGradient
-
-                VStack(alignment: .leading) {
+                
+                VStack {
+                    // Header
                     HStack {
                         Text(name)
                             .font(AppTheme.titleFont())
                             .foregroundColor(AppTheme.textPrimary)
                             .fontWeight(.bold)
-
+                        
                         Spacer()
-
+                        
                         Button(action: {
                             showDeleteConfirmation = true
                         }) {
@@ -39,71 +40,89 @@ struct CalendarDetailView: View {
                                 .foregroundColor(AppTheme.textPrimary)
                                 .padding(8)
                         }
-                    }
-                    .padding(20)
-
-                    ScrollView {
-                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 20) {
-                            ForEach(calendarDays, id: \.date) { entry in
-                                if isToday(entry.date) {
-                                    NavigationLink(
-                                        destination: CalendarEntryView(entry: entry)
-                                    ) {
-                                        VStack(spacing: 1) {
-                                            VStack { EmptyView() }
-                                                .frame(height: 100)
-                                                .calendarWidgetStyle()
-
-                                            Text("\(dateFormatter.string(from: entry.date))")
-                                                .font(AppTheme.bodyFont())
-                                                .foregroundColor(AppTheme.textPrimary)
-                                                .multilineTextAlignment(.center)
-                                                .frame(height: 30)
-                                        }
-                                    }
-                                } else {
-                                    VStack(spacing: 1) {
-                                        VStack { EmptyView() }
-                                            .frame(height: 100)
-                                            .calendarWidgetStyle()
-
-                                        Text("\(dateFormatter.string(from: entry.date))")
-                                            .font(AppTheme.bodyFont())
-                                            .foregroundColor(AppTheme.textPrimary)
-                                            .multilineTextAlignment(.center)
-                                            .frame(height: 30)
-                                    }
-                                }
-                            }
-                        }
-                        .padding()
-                    }
-                }
-
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        Button(action: { shareCalendar() }) {
+                        
+                        // Share Icon
+                        Button(action: {
+                            shareCalendar()
+                        }) {
                             Image(systemName: "square.and.arrow.up")
                                 .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(.white)
-                                .padding(20)
-                                .background(AppTheme.accentDark)
-                                .clipShape(RoundedRectangle(cornerRadius: 16))
-                                .shadow(radius: 4)
+                                .scaledToFit()
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(AppTheme.textPrimary)
+                                .padding(8)
                         }
-                        .padding()
                     }
+                    .padding([.top], 40)
+                    .padding([.horizontal], 20)
+                    
+                    Spacer()
+                    
+                    // Swipable Dates Section
+                    GeometryReader { geometry in
+                        TabView(selection: $currentIndex) {
+                            ForEach(calendarDays.indices, id: \.self) { index in
+                                VStack {
+                                    if isToday(calendarDays[index].date) {
+                                        NavigationLink(
+                                            destination: CalendarEntryView(entry: calendarDays[index])
+                                        ) {
+                                            VStack {
+                                                Text("Today")
+                                                    .font(AppTheme.titleFont())
+                                                    .foregroundColor(AppTheme.textPrimary)
+                                                    .padding(.bottom, 8)
+                                            }
+                                            .frame(width: geometry.size.width * 0.8, height: geometry.size.height * 0.6)
+                                            .background(
+                                                ZStack {
+                                                    Image(calendarDays[index].background)
+                                                        .resizable()
+                                                        .scaledToFill()
+                                                        .clipped()
+                                                }
+                                            )
+                                            .cornerRadius(12)
+                                        }
+                                    } else {
+                                        VStack {
+                                            Text(dateFormatter.string(from: calendarDays[index].date))
+                                                .font(AppTheme.bodyFont())
+                                                .foregroundColor(AppTheme.textPrimary)
+                                                .padding(.bottom, 8)
+                                        }
+                                        .frame(width: geometry.size.width * 0.8, height: geometry.size.height * 0.6)
+                                        .background(
+                                            ZStack {
+                                                Image(calendarDays[index].background)
+                                                    .resizable()
+                                                    .scaledToFill()
+                                                    .clipped()
+                                                    .blur(radius: 10) // Apply blur if you want
+                                                
+                                                Color.black.opacity(0.7) // Adjust the opacity to control the greyness
+                                                    .blendMode(.multiply) // This will darken and grey out the image
+                                            }
+                                        )
+                                        .cornerRadius(12)
+                                    }
+                                }
+                                .tag(index)
+                                .scaleEffect(currentIndex == index ? 1 : 0.8) // Scale down non-centered items
+                                .animation(.easeInOut(duration: 0.3), value: currentIndex)
+                            }
+                        }
+                        .tabViewStyle(.page(indexDisplayMode: .never))
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                    }
+                    .frame(height: UIScreen.main.bounds.height * 0.8) // Adjust height to cover most of the screen
+                    
+                    Spacer()
                 }
             }
             .onAppear {
                 loadCalendarDays()
-            }
-            .navigationDestination(isPresented: $navigateToMyCalendarsView) {
-                MyCalendarsView()
-                    .navigationBarBackButtonHidden(true)
+                setInitialDateIndex()
             }
             .alert("Delete Calendar", isPresented: $showDeleteConfirmation) {
                 Button("Cancel", role: .cancel) {
@@ -118,13 +137,20 @@ struct CalendarDetailView: View {
         }
     }
     
+    // Find today's date and set it as the initial index
+    func setInitialDateIndex() {
+        if let todayIndex = calendarDays.firstIndex(where: { isToday($0.date) }) {
+            currentIndex = todayIndex
+        }
+    }
+    
     func loadCalendarDays() {
         if let folderURL = getFolderURL(folderName: "createdCalendars") {
             let fileURL = folderURL.appendingPathComponent("\(name).csv")
             calendarDays = getCalender(fileURL: fileURL)
         }
     }
-
+    
     func createTextFile(withContent content: String) -> URL? {
         let fileName = "sharedCalendar.csv"
         let fileManager = FileManager.default
