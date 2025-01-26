@@ -13,7 +13,6 @@ struct SectionHeaderView: View {
 
             Spacer()
 
-            // Navigation Button
             NavigationLink(destination: OptionsView()
                 .toolbar(.hidden, for: .tabBar)) {
                 Image(systemName: "gearshape")
@@ -23,6 +22,16 @@ struct SectionHeaderView: View {
                     .foregroundColor(AppTheme.textPrimary)
                     .padding(8)
             }
+            
+            NavigationLink(destination: CalendarCreateView()
+                .toolbar(.hidden, for: .tabBar)) {
+                    Image(systemName: "plus")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 30, height: 30)
+                        .foregroundColor(AppTheme.textPrimary)
+                        .padding(8)
+                }
         }
         .padding(25)
     }
