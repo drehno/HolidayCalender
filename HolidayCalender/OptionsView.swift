@@ -34,6 +34,20 @@ struct OptionsView: View {
                     .padding(.horizontal, 30)
                     .padding(.top, 20)
                     
+                    HStack{
+                        NavigationLink(destination: ExplanationView()
+                            .toolbar(.hidden, for: .tabBar)) {
+                                Text("Tarot Card Explanation")
+                                    .font(AppTheme.secondTitleFont())
+                                    .foregroundColor(AppTheme.textPrimary)
+                            }
+                            .padding()
+                            .background(AppTheme.accentDark.opacity(0.3))
+                            .cornerRadius(10)
+                    }
+                    .padding(.horizontal, 30)
+                    .padding(.top, 20)
+                    
                     HStack {
                         Text("Dark Mode")
                             .font(AppTheme.secondTitleFont())
