@@ -23,6 +23,13 @@ struct CalendarEntryView: View {
     
     var body: some View {
         ZStack {
+            Image("\(selectedBackground)")
+                .resizable()
+                .scaledToFill()
+                .clipped()
+                .edgesIgnoringSafeArea(.all)
+                .blur(radius: 10)
+            
             // The main box
             GeometryReader { proxy in 
                 mainContentView
