@@ -1,10 +1,20 @@
 import SwiftUI
 
 struct BackgroundPicker: View {
-    @Binding var selectedBackground: String
-    var onBackgroundSelected: (() -> Void)?
+    @State var selectedBackground: String = ""
+    var onBackgroundSelected: ((String) -> Void)?
+    
+    let calendarName : String
+    let dayNumber : Int
     
     let availableBackgrounds = ["b1", "b2", "b3", "b4", "b5", "b6"]
+    
+    init(name: String, day: Int, onBackgroundSelected: ((String) -> Void)? = nil)
+    {
+    	calendarName = name + ".csv"
+    	dayNumber = day
+    	self.onBackgroundSelected = onBackgroundSelected
+    }
     
     var body: some View {
         ScrollView {
@@ -17,7 +27,12 @@ struct BackgroundPicker: View {
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                         .onTapGesture {
                             selectedBackground = background
-                            onBackgroundSelected?()
+                            replaceBackgroundInFile(
+                                calendarName,
+                                atOccurrence: dayNumber,
+                                with: selectedBackground
+                            )
+                            onBackgroundSelected?(background)
                         }
                 }
             }

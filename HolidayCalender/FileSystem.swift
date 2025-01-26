@@ -194,6 +194,54 @@ func getAllCalendarBackgrounds(folderName: String) -> [String] {
     return fileBackgrounds
 }
 
+import Foundation
+
+func replaceBackgroundInFile(_ fileName: String, atOccurrence occurrence: Int, with newBackground: String) {
+    // Step 1: Get the folder URL
+    guard let folderURL = getFolderURL(folderName: "createdCalendars") else {
+        print("Error: Could not find the 'createdCalendars' folder.")
+        return 
+    }
+    
+    // Step 2: Construct the file URL
+    let fileURL = folderURL.appendingPathComponent(fileName)
+    
+    // Step 3: Read the file content
+    guard let fileContent = try? String(contentsOf: fileURL, encoding: .utf8) else {
+        print("Error: Could not read the file.")
+        return 
+    }
+    
+    // Step 4: Split the content by `;`
+    var components = fileContent.components(separatedBy: ";")
+    
+    // Step 5: Validate the number of components
+    guard components.count >= occurrence * 3 else {
+        print("Error: Not enough entries in the file.")
+        return 
+    }
+    
+    // Step 6: Calculate the index of the background to replace
+    // Each entry consists of 3 parts: date, background, quote
+    // The background is at index 1, 4, 7, etc.
+    let backgroundIndex = (occurrence - 1) * 3 + 1
+    
+    // Step 7: Replace the background at the calculated index
+    components[backgroundIndex] = newBackground
+    
+    // Step 8: Join the components back into a single string
+    let updatedContent = components.joined(separator: ";")
+    
+    // Step 9: Write the modified content back to the file
+    do {
+        try updatedContent.write(to: fileURL, atomically: true, encoding: .utf8)
+        return 
+    } catch {
+        print("Error: Could not write to the file.")
+        return 
+    }
+}
+
 /*
 func convertBackgroundName(name: String) -> String
 {

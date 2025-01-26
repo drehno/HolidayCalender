@@ -3,8 +3,10 @@ import SwiftUI
 struct CalendarEntryView: View {
     private let folderName = "createdCalendars"
     private let entry: CalendarDay
+    private let calendarName : String
+    private let calendarEntryNumber : Int
     @State private var createdCalendars: [String] = []
-    @State private var selectedBackground: String
+    @State private var selectedBackground: String 
     @State private var showImagePicker = false
     @State private var showButtons = false
     @State private var shareImage: UIImage? = nil
@@ -12,15 +14,16 @@ struct CalendarEntryView: View {
     
     @State var size: CGSize = .zero
     
-    init(entry: CalendarDay) {
+    init(entry: CalendarDay, calendarName : String, calendarEntryNumber: Int) {
         self.entry = entry
-        _selectedBackground = State(initialValue: entry.background)
+        selectedBackground = entry.background
+        self.calendarName = calendarName
+        self.calendarEntryNumber = calendarEntryNumber
     }
     
     var body: some View {
         ZStack {
             // The main box
-            
             GeometryReader { proxy in 
                 mainContentView
                     .cornerRadius(20)
@@ -59,9 +62,10 @@ struct CalendarEntryView: View {
                                     }
                                     .transition(.move(edge: .bottom).combined(with: .opacity))
                                     .sheet(isPresented: $showImagePicker) {
-                                        BackgroundPicker(selectedBackground: $selectedBackground) {
-                                            showImagePicker = false
-                                        }
+                                        BackgroundPicker(name: calendarName, day: calendarEntryNumber, onBackgroundSelected: { newBackground in
+                                            selectedBackground = newBackground // Update the selected background
+                                            showImagePicker = false // Dismiss the sheet
+                                        })
                                     }
                                     
                                     // Share Button
@@ -188,8 +192,4 @@ struct CalendarEntryView: View {
         formatter.dateStyle = .medium
         return formatter
     }
-}
-
-#Preview {
-    CalendarEntryView(entry: exampleCalendar[0])
 }

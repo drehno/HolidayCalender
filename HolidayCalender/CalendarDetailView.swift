@@ -65,7 +65,7 @@ struct CalendarDetailView: View {
                                 VStack {
                                     if isToday(calendarDays[index].date) {
                                         NavigationLink(
-                                            destination: CalendarEntryView(entry: calendarDays[index])
+                                            destination: CalendarEntryView(entry: calendarDays[index], calendarName: self.name, calendarEntryNumber: index + 1)
                                         ) {
                                             VStack {
                                                 Text("Today")
