@@ -2,7 +2,7 @@ import SwiftUI
 
 struct OptionsView: View {
     @Environment(\.colorScheme) private var colorScheme
-    @AppStorage("isDarkModeEnabled") private var isDarkModeEnabled = false
+    @AppStorage("isDarkModeEnabled") public var isDarkModeEnabled = true
     //TODO: Boolean wert ob das tor von einem kalender bereits geöffnet wurde und diesen in zeile 41 anstelle von isConditionMet einsetzen
     
     var body: some View {
@@ -112,7 +112,7 @@ func scheduleDailyNotification(hour: Int, minute: Int, isConditionMet: Bool) {
     UNUserNotificationCenter.current().add(request)
 }
 
-private func updateColorScheme(_ isDarkModeEnabled: Bool) {
+public func updateColorScheme(_ isDarkModeEnabled: Bool) {
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
             let userInterfaceStyle: UIUserInterfaceStyle = isDarkModeEnabled ? .dark : .light
             windowScene.windows.forEach { window in

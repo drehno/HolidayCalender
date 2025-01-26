@@ -20,6 +20,7 @@ struct MainTabView: View {
         .accentColor(AppTheme.textPrimary)
         .onAppear {
             requestNotificationPermission()
+            updateColorScheme(true)
         }
     }
 }
