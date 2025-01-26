@@ -45,7 +45,6 @@ struct CalendarCreateView: View {
                                         triggerVibration()
                                     } else if !autocorrectingTitle {
                                         showError = false
-                                        print("show error false!") 
                                     } else {
                                         autocorrectingTitle = false    
                                     }

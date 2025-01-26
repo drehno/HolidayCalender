@@ -6,6 +6,8 @@ struct CalendarDetailView: View {
     @State private var navigateToMyCalendarsView = false
     @State private var calendarDays: [CalendarDay] = []
     @State private var showDeleteConfirmation = false
+    
+    @State private var tinyURL: String? = nil // State to store the generated TinyURL
     var name: String
     
     init(name: String) {
@@ -139,7 +141,7 @@ struct CalendarDetailView: View {
     }
     
     func shareCalendar() {
-        // Sample CSV content
+        // Generate CSV content
         let csvContent = generateCSVContent(for: calendarDays)
         
         // Create a temporary file URL for the CSV file
@@ -155,18 +157,56 @@ struct CalendarDetailView: View {
             // Construct the custom URL
             let customURL = "holidaycalendar://open?file=\(fileURL.lastPathComponent)"
             
-            let activityViewController = UIActivityViewController(activityItems: [fileURL, customURL], applicationActivities: nil)
-            
-            // Present the share sheet in a safe way
-            if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                if let rootViewController = scene.windows.first?.rootViewController {
-                    rootViewController.present(activityViewController, animated: true, completion: nil)
+            // Generate a TinyURL for the custom URL
+            generateTinyURL(for: customURL) { tinyURL in
+                if let tinyURL = tinyURL {
+                    // Share the CSV file and the TinyURL
+                    let activityViewController = UIActivityViewController(activityItems: [fileURL, tinyURL], applicationActivities: nil)
+                    
+                    // Present the share sheet in a safe way
+                    if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                        if let rootViewController = scene.windows.first?.rootViewController {
+                            rootViewController.present(activityViewController, animated: true, completion: nil)
+                        }
+                    }
+                } else {
+                    print("Failed to generate TinyURL")
                 }
             }
-            
         } catch {
             print("Error writing CSV file: \(error)")
         }
+    }
+    
+    // Function to generate a TinyURL
+    func generateTinyURL(for url: String, completion: @escaping (String?) -> Void) {
+        let encodedURL = url.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
+        let tinyURLAPI = "https://tinyurl.com/api-create.php?url=\(encodedURL)"
+        
+        guard let apiURL = URL(string: tinyURLAPI) else {
+            completion(nil)
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: apiURL) { data, response, error in
+            if let error = error {
+                print("Error generating TinyURL: \(error.localizedDescription)")
+                completion(nil)
+                return
+            }
+            
+            guard let data = data, let tinyURL = String(data: data, encoding: .utf8) else {
+                print("No data received from TinyURL API")
+                completion(nil)
+                return
+            }
+            
+            DispatchQueue.main.async {
+                completion(tinyURL)
+            }
+        }
+        
+        task.resume()
     }
 }
 

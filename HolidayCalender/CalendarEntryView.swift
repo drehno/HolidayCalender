@@ -9,6 +9,8 @@ struct CalendarEntryView: View {
     @State private var shareImage: UIImage? = nil
     @State private var isSharing = false
     
+    @State var size: CGSize = .zero
+    
     init(entry: CalendarDay) {
         self.entry = entry
         switch entry.background {
@@ -26,9 +28,19 @@ struct CalendarEntryView: View {
     var body: some View {
         ZStack {
             // The main box
-            mainContentView
-                .cornerRadius(20)
-                .padding(20)
+            
+            GeometryReader { proxy in 
+                mainContentView
+                    .cornerRadius(20)
+                    .padding(20)
+                    .onAppear {
+                        // Calculate the adjusted size dynamically
+                        let padding: CGFloat = 20
+                        size = proxy.size
+                        size.width -= padding * 2 
+                        size.height -= padding * 3
+                    }
+            }
             
             // Share button (not included in the rendered image)
             VStack {
@@ -54,45 +66,46 @@ struct CalendarEntryView: View {
     
     // Main content view (to be rendered as an image)
     private var mainContentView: some View {
-        VStack(spacing: 0) { // Set spacing to 0 to avoid extra space
-            // Top Date text
-            Text("\(dateFormatter.string(from: entry.date))")
-                .font(.headline)
-                .foregroundColor(.white)
-                .padding(10)
-                .background(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.black, lineWidth: 3)
-                        .background(Color.black.opacity(0.1))
-                )
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.top, 10) // Keep padding for visual appearance
-            
-            Spacer()
-            
-            // Centered text inside the box
-            Text("\(entry.quote)")
-                .font(.title)
-                .foregroundColor(.white)
-                .bold()
-                .padding(10)
-                .background(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.black, lineWidth: 3)
-                        .background(Color.black.opacity(0.4))
-                )
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-        .background(
-            ZStack {
-                // Background image inside the box
-                Image("\(backgroundImage)")
-                    .resizable()
-                    .scaledToFill()
-                    .clipped()
+            VStack(spacing: 0) { // Set spacing to 0 to avoid extra space
+                // Top Date text
+                Text("\(dateFormatter.string(from: entry.date))")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .padding(10)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.black, lineWidth: 3)
+                            .background(Color.black.opacity(0.1))
+                    )
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.top, 10) // Keep padding for visual appearance
+                
+                Spacer()
+                
+                // Centered text inside the box
+                Text("\(entry.quote)")
+                    .font(.title)
+                    .foregroundColor(.white)
+                    .bold()
+                    .padding(10)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.black, lineWidth: 3)
+                            .background(Color.black.opacity(0.4))
+                    )
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-        )
+            .background(
+                ZStack {
+                    // Background image inside the box
+                    Image("\(backgroundImage)")
+                        .resizable()
+                        .scaledToFill()
+                        .clipped()
+                }
+            )
+        
     }
     
     private func shareEntry(){
@@ -119,8 +132,8 @@ struct CalendarEntryView: View {
         
         // Define the target size explicitly (without padding)
         let targetSize = CGSize(
-            width: UIScreen.main.bounds.width - 40, // Subtract padding
-            height: UIScreen.main.bounds.height - 40 // Subtract padding
+            width: size.width, // Subtract padding
+            height: size.height - 80 // Subtract padding
         )
         view?.bounds = CGRect(origin: .zero, size: targetSize)
         view?.backgroundColor = .clear
@@ -138,19 +151,6 @@ struct CalendarEntryView: View {
         formatter.dateStyle = .medium
         return formatter
     }
-}
-
-// ActivityView to share the image
-struct ActivityView: UIViewControllerRepresentable {
-    var activityItems: [Any]
-    var applicationActivities: [UIActivity]? = nil
-    
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        let controller = UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
-        return controller
-    }
-    
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 #Preview {
