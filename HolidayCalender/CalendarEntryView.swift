@@ -2,10 +2,11 @@ import SwiftUI
 
 struct CalendarEntryView: View {
     private let folderName = "createdCalendars"
-    @State private var createdCalendars: [String] = []
     private let entry: CalendarDay
-    private let backgroundImage: String
-    
+    @State private var createdCalendars: [String] = []
+    @State private var selectedBackground: String
+    @State private var showImagePicker = false
+    @State private var showButtons = false
     @State private var shareImage: UIImage? = nil
     @State private var isSharing = false
     
@@ -13,8 +14,7 @@ struct CalendarEntryView: View {
     
     init(entry: CalendarDay) {
         self.entry = entry
-        self.backgroundImage = entry.background
-       // backgroundImage = convertBackgroundName(name: entry.background)
+        _selectedBackground = State(initialValue: entry.background)
     }
     
     var body: some View {
@@ -39,20 +39,63 @@ struct CalendarEntryView: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    Button(action: {
-                        shareEntry()
-                    }) {
-                        Image(systemName: "square.and.arrow.up")
-                            .resizable()
-                            .frame(width: 24, height: 24)
-                            .foregroundColor(.white)
-                            .padding(20)
-                            .background(AppTheme.accentDark)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                            .shadow(radius: 4)
+                    ZStack {
+                        VStack {
+                            Spacer()
+                            
+                            // Action Buttons (Edit and Share)
+                            if showButtons {
+                                VStack(spacing: 10) {
+                                    // Edit Button
+                                    Button(action: {
+                                        showImagePicker.toggle()
+                                    }) {
+                                        Image(systemName: "pencil")
+                                            .resizable()
+                                            .frame(width: 30, height: 30)
+                                            .foregroundColor(.white)
+                                            .padding(20)
+                                            .shadow(radius: 4)
+                                    }
+                                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                                    .sheet(isPresented: $showImagePicker) {
+                                        BackgroundPicker(selectedBackground: $selectedBackground) {
+                                            showImagePicker = false
+                                        }
+                                    }
+                                    
+                                    // Share Button
+                                    Button(action: {
+                                        shareEntry()
+                                    }) {
+                                        Image(systemName: "square.and.arrow.up")
+                                            .resizable()
+                                            .frame(width: 30, height: 30)
+                                            .foregroundColor(.white)
+                                            .padding(20)
+                                            .shadow(radius: 4)
+                                    }
+                                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                                }
+                            }
+                            
+                            // Ellipsis Button
+                            Button(action: {
+                                withAnimation {
+                                    showButtons.toggle()
+                                }
+                            }) {
+                                Image(systemName: "ellipsis.circle")
+                                    .resizable()
+                                    .frame(width: 40, height: 40)
+                                    .foregroundColor(.white)
+                                    .padding(20)
+                                    .shadow(radius: 4)
+                            }
+                            .padding(.bottom, 30)
+                        }
+                        .padding(.trailing, 30)
                     }
-                    .padding(.trailing, 30)
-                    .padding(.bottom, 30)
                 }
             }
         }
@@ -93,7 +136,7 @@ struct CalendarEntryView: View {
             .background(
                 ZStack {
                     // Background image inside the box
-                    Image("\(backgroundImage)")
+                    Image("\(selectedBackground)")
                         .resizable()
                         .scaledToFill()
                         .clipped()
